@@ -55,7 +55,11 @@ final class LdapService
     public function auth(): bool
     {
         if ($this->connection) {
-            return ldap_bind($this->connection, $this->user, $this->pass);
+            try {
+                return ldap_bind($this->connection, $this->user, $this->pass);
+            } catch (\Throwable $th) {
+                throw new \ErrorException("Error de autenticación LDAP: " . $th->getMessage());
+            }
         }
     }
 
