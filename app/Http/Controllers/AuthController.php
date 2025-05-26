@@ -7,6 +7,7 @@ use App\Models\Usuario;
 use App\Services\LdapService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -14,13 +15,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'user' => 'required|string',
-            'pass' => 'required|string|min:8',
+            'user' => 'required',
+            'pass' => 'required',
         ], [
             'user.required' => 'Debe proporcionar un nombre de usuario.',
-            'user.string' => 'Nombre de usuario no valido.',
             'pass.required' => 'Debe proporcionar una contraseña.',
-            'pass.min' => 'La contraseña no cumple con las politicas de seguridad.',
         ]);
 
         $user = $request->post('user');
@@ -29,7 +28,7 @@ class AuthController extends Controller
         $userDb = Usuario::where('usuario', $user)->first();;
 
         if (empty($userDb) || $userDb->activo == 0) {
-            return back()->withErrors(['credentials' => "$user no es un usuario valido del sistema."]);
+            return back()->withErrors(['credentials' => "<b>$user</b> no es un usuario valido del sistema."]);
         }
 
         $ldap = LdapService::init($user, $pass);
@@ -61,9 +60,5 @@ class AuthController extends Controller
             Log::notice($th->getMessage(), [$userDb->usuario => $userDb->nombre]);
             return back()->withErrors(['credentials' => 'Credenciales incorrectas']);
         }
-    }
-
-    public function logout(Request $request)
-    {
     }
 }
