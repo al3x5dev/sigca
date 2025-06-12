@@ -35,19 +35,20 @@ class AuthController extends Controller
         try {
             if ($ldap->auth()) {
 
+                $rol = (Rol::find($userDb->rol))->rol;
+
+                $request->session()->put('logged', [
+                    'id'=> $userDb->id,
+                    'nombre' => $userDb->nombre,
+                    'usuario' => $userDb->usuario,
+                    'rol' => $rol,
+                    'last' => $userDb->ultm_acc
+                ]);
+
                 // Actualizar el campo fecha_ultimo_acceso con la fecha y hora actual
                 $userDb->ultm_acc = Carbon::now(); // O usa ahora() si prefieres
                 // Guardar los cambios en la base de datos
                 $userDb->save();
-
-
-                $rol = (Rol::find($userDb->rol))->rol;
-
-                $request->session()->put('logged', [
-                    'nombre' => $userDb->nombre,
-                    'usuario' => $userDb->usuario,
-                    'rol' => $rol
-                ]);
 
                 return match ($rol) {
                     'Supervisor' => redirect()->route('admin.dashboard'),
@@ -58,7 +59,7 @@ class AuthController extends Controller
             }
         } catch (\Throwable $th) {
             Log::notice($th->getMessage(), [$userDb->usuario => $userDb->nombre]);
-            return back()->withErrors(['credentials' => 'Credenciales incorrectas']);
+            return back()->withErrors(['credentials' => 'Contraseña incorrecta. Contacte al administrador.']);
         }
     }
 }
