@@ -16,7 +16,7 @@ Route::get('/', function () {
         return match ($userRol) {
             'supervisor' => redirect()->route('admin.dashboard'),
             'comprador' => redirect()->route('compra.dashboard'),
-            'usuario' => redirect()->route('user.dashboard'),
+            'usuario' => redirect()->route('solicitudes.dashboard'),
             default => redirect()->route('login'),
         };
     }
@@ -54,7 +54,7 @@ Route::middleware(['ldap.auth', 'role:comprador'])->prefix('compra')->name('comp
 });
 
 // Grupo para usuarios (autenticación + rol usuario)
-Route::middleware(['ldap.auth', 'role:usuario'])->prefix('user')->name('user.')->group(function () {
+Route::middleware(['ldap.auth', 'role:usuario'])->prefix('user')->name('solicitudes.')->group(function () {
     Route::get('/', [SolicitudController::class, 'index'])->name('dashboard');
-    // Otras rutas usuario aquí
+    Route::get('/', [SolicitudController::class, 'all'])->name('all');
 });
