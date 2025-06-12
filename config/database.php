@@ -112,6 +112,21 @@ return [
             'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'une_2316a_int' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DB_URL_UNE'),
+            'host' => env('DB_HOST_UNE', 'MEDIASERVER'),
+            'port' => env('DB_PORT_UNE', '1433'),
+            'database' => env('DB_DATABASE_UNE', 'UNE_2316A_INT'),
+            'username' => env('DB_USERNAME_UNE', 'user_assets'),
+            'password' => env('DB_PASSWORD_UNE', ''),
+            'charset' => env('DB_CHARSET_UNE', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'encrypt' => env('DB_ENCRYPT_UNE', 'yes'),
+            'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE_UNE', 'false'),
+        ],
+
     ],
 
     /*
