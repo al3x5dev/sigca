@@ -16,9 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('numero',10)->nullable(false)->unique();
             $table->integer('id_usuario')->nullable(false);
+            $table->integer('id_comprador')->nullable(true);
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->foreign('id_usuario')->references('id')->on('Usuarios');
+            $table->foreign('id_comprador')->references('id')->on('Usuarios');
         });
     }
 
