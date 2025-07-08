@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ProductosSolicitud', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_solicitud')->nullable(false);
-            $table->char('id_producto',20)->unique();
+            $table->char('id_producto',20)->unique()->nullable();
             $table->string('descripcion',255)->nullable(false);
             $table->integer('cant_solicitada')->nullable(false);
             $table->integer('cant_recibida')->default(0);
