@@ -170,13 +170,6 @@ function searchProduct() {
         },
         sendData() {
             let str = JSON.stringify(this.products);
-            /*this.products.forEach(p => {
-                console.log(p.Id_Producto);
-                console.log(p.Desc_Producto);
-                console.log(p.Cantidad);
-                console.log(p.UM_Almacen);
-            });*/
-
             return str;
         }
     }
