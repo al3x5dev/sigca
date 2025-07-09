@@ -26,7 +26,7 @@ class RoleMiddleware
             return match ($userRol) {
                 'Supervisor' => redirect()->route('admin.dashboard'),
                 'Comprador' => redirect()->route('compra.dashboard'),
-                'Usuario' => redirect()->route('solicitudes.dashboard'),
+                'Usuario' => redirect()->route('user.dashboard'),
                 default => redirect()->route('login')
             };
         }
