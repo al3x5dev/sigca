@@ -146,14 +146,15 @@ function searchProduct() {
             }
 
             if (this.selectedProduct == null) {
-                let lista = [];
+                // Crear un nuevo producto
+                const newProduct = {
+                    Id_Producto: null,
+                    UM_Almacen: 'U',
+                    Desc_Producto: inputDesc.value,
+                    Cantidad: inputCant.value
+                };
 
-                lista.Id_Producto = null;
-                lista.UM_Almacen = 'U';
-                lista.Desc_Producto = inputDesc.value;
-                lista.Cantidad = inputCant.value;
-
-                this.products.push(lista);
+                this.products.push(newProduct);
             } else {
                 delete this.selectedProduct.Existencia_Actual;
                 this.selectedProduct.Cantidad = inputCant.value;
