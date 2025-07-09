@@ -25,9 +25,9 @@ flex flex-col
         <!-- Logo -->
         <a href="{{url('/')}}" class="flex items-center justify-center ">
             <span class="">
-                <img class="w-[38px]" src="{{asset('assets/img/logo.png')}}" alt="">
+                <img class="w-[38px]"  x-bind:src="darkMode ? '{{ asset('assets/img/logo-dark.png') }}' : '{{ asset('assets/img/logo.png') }}'">
             </span>
-            <span class="ml-3 text-3xl font-semibold">SIGCA</span>
+            <span class="ml-3 text-3xl font-semibold" x-bind:class="{ 'text-white': darkMode }">SIGCA</span>
         </a>
 
         <span class="opacity-0">Sigca</span>
@@ -35,16 +35,19 @@ flex flex-col
     </nav>
 
     <style>
+        #sidebar-menu>li.active {
+            background-color: var(--color-primary) !important;
+            color: var(--color-primary-content);
+        }
         #sidebar-menu>li:hover {
-            /*bg-neutral/20*/
-            background-color: color-mix(in oklab, var(--color-base-content)10%, #0000);
+            background-color: color-mix(in oklab,var(--color-base-content)20%,transparent);
         }
     </style>
 
     <ul class="mt-8" id="sidebar-menu" style="flex: 1 0 auto;">
         @switch(session('logged.rol'))
         @case('Supervisor')
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'bg-neutral/20' : '' }}">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
             <a href="" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -57,7 +60,7 @@ flex flex-col
             </a>
         </li>
 
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'checkSolicitudes' ? 'bg-neutral/20' : '' }}">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'checkSolicitudes' ? 'active' : '' }}">
             <a href="" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -67,7 +70,7 @@ flex flex-col
             </a>
         </li>
 
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'checkCompra' ? 'bg-neutral/20' : '' }}">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'checkCompra' ? 'active' : '' }}">
             <a href="" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -79,7 +82,7 @@ flex flex-col
             </a>
         </li>
 
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'allUsers' ? 'bg-neutral/20' : '' }}">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'allUsers' ? 'active' : '' }}">
             <a href="" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -98,8 +101,8 @@ flex flex-col
         @break
 
         @default
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'bg-neutral/20' : '' }}">
-            <a href="" class="flex items-center">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
+            <a href="{{route('user.dashboard')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
@@ -111,13 +114,13 @@ flex flex-col
             </a>
         </li>
 
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'solicitudes' ? 'bg-neutral/20' : '' }}">
-            <a href="" class="flex items-center">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'newSolicitud' ? 'active' : '' }}">
+            <a href="{{$page['title'] != 'newSolicitud'?route('user.solicitud'): ''}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2" />
                 </svg>
-                Solicitudes
+                Nueva Solicitud
             </a>
         </li>
         @endswitch
