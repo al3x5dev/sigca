@@ -19,5 +19,5 @@ class Solicitud extends Model
         'fecha',
     ];
 
-    //public $timestamps = false;
+    public $timestamps = false;
 }

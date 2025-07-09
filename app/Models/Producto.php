@@ -19,4 +19,6 @@ class Producto extends Model
         'cant_solicitada',
         'cant_recibida',
     ];
+
+    public $timestamps = false;
 }

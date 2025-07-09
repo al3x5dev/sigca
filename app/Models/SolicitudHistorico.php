@@ -17,4 +17,6 @@ class SolicitudHistorico extends Model
         'estado',
         'fecha',
     ];
+
+    public $timestamps = false;
 }
