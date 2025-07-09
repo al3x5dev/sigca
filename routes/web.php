@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompradorController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SolicitudController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +17,7 @@ Route::get('/', function () {
         return match ($userRol) {
             'supervisor' => redirect()->route('admin.dashboard'),
             'comprador' => redirect()->route('compra.dashboard'),
-            'usuario' => redirect()->route('solicitudes.dashboard'),
+            'usuario' => redirect()->route('user.dashboard'),
             default => redirect()->route('login'),
         };
     }
@@ -54,7 +55,13 @@ Route::middleware(['ldap.auth', 'role:comprador'])->prefix('compra')->name('comp
 });
 
 // Grupo para usuarios (autenticación + rol usuario)
-Route::middleware(['ldap.auth', 'role:usuario'])->prefix('user')->name('solicitudes.')->group(function () {
-    Route::get('/', [SolicitudController::class, 'index'])->name('dashboard');
-    Route::get('/', [SolicitudController::class, 'all'])->name('all');
+Route::middleware(['ldap.auth', 'role:usuario'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/', [SolicitudController::class, 'dashboard'])->name('dashboard');
+    Route::get('/solicitud', [SolicitudController::class, 'add'])->name('solicitud');
+    Route::post('/add-solicitud', [SolicitudController::class, 'addSolicitud'])->name('addSolicitud');
+});
+
+
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/search-products', [ProductoController::class, 'search'])->name('producto');
 });
