@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\LdapAuthMiddleware;
+use App\Http\Middleware\NoCache;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'ldap.auth'=>LdapAuthMiddleware::class,
-            'role' => RoleMiddleware::class
+            'role' => RoleMiddleware::class,
+            'no.cache' => NoCache::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
