@@ -25,7 +25,7 @@ class AuthController extends Controller
         $user = $request->post('user');
         $pass = $request->post('pass');
 
-        $userDb = Usuario::where('usuario', $user)->first();;
+        $userDb = Usuario::where('usuario', $user)->first();
 
         if (empty($userDb) || $userDb->activo == 0) {
             return back()->withErrors(['credentials' => "<b>$user</b> no es un usuario valido del sistema."]);
