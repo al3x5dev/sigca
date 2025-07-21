@@ -153,7 +153,7 @@ class SolicitudController extends Controller
                         'id_producto' => $id,
                         'descripcion' => $producto['Desc_Producto'],
                         'cant_solicitada' => $producto['Cantidad'],
-                        'nuevo' => str_starts_with($id,'ID_')
+                        'nuevo' => str_starts_with($id, 'ID_')
                     ]);
                     $save[] = $addProducto->save();
                 }
