@@ -31,7 +31,8 @@ return new class extends Migration
 
 
         // Ejecutar procedimiento almacenado sp_InsertarUsuario
-        DB::statement("EXEC sp_InsertarUsuario '78892', 1, 'alejandrom';");
+        DB::statement("EXEC sp_InsertarUsuario '78892', 2, 'alejandrom';");
+        DB::statement("EXEC sp_InsertarUsuario '77565', 3, 'dania';");
     }
 
     /**
