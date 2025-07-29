@@ -1,0 +1,51 @@
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+dialog {
+    visibility: hidden;
+    background-color: #fff1;
+    position: fixed;
+    top: 0;
+    z-index: 99;
+    opacity: 0;
+}
+
+dialog[open="true"] {
+    visibility: visible;
+    opacity: 1;
+}
+
+dialog .card {
+    transform: scale(0%);
+}
+
+dialog[open="true"] .card {
+    transform: scale(100%);
+}
+
+dialog ul {
+    padding: .75em;
+    max-height: 130px;
+    width: calc(100% - 48px);
+    top: 190px;
+    z-index: 1;
+    /*display: none;*/
+}
