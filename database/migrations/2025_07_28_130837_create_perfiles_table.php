@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Ajustes', function (Blueprint $table) {
+        Schema::create('Perfiles', function (Blueprint $table) {
             $table->integer('id')->nullable(false);
             $table->string('mode',50)->default('light');
             $table->boolean('notifications')->default(false);
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ajustes');
+        Schema::dropIfExists('Perfiles');
     }
 };
