@@ -22,7 +22,7 @@ return new class extends Migration
             $table->dateTime('ultm_acc')->nullable();
             $table->boolean('activo')->default(true);
 
-            $table->foreign('rol')->references('id')->on('Roles');
+            $table->foreign('rol')->references('id')->on('Roles')->onDelete('no action');
         });
     }
 

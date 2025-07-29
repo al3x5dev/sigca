@@ -19,8 +19,8 @@ return new class extends Migration
             $table->integer('id_comprador')->nullable(true);
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
 
-            $table->foreign('id_usuario')->references('id')->on('Usuarios')->onDelete('no action');
-            $table->foreign('id_comprador')->references('id')->on('Usuarios')->onDelete('no action');
+            $table->foreign('id_usuario')->references('id')->on('Usuarios')->onDelete('cascade');
+            $table->foreign('id_comprador')->references('id')->on('Usuarios')->onDelete('cascade');
         });
     }
 

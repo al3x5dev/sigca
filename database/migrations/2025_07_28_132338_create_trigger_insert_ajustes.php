@@ -14,12 +14,12 @@ return new class extends Migration
     {
         // Crear el trigger
         DB::statement("
-            CREATE TRIGGER insert_ajustes
+            CREATE TRIGGER insert_perfiles
             ON Usuarios
             AFTER INSERT
             AS
             BEGIN
-                INSERT INTO Ajustes (id, mode, notifications)
+                INSERT INTO Perfiles (id, mode, notifications)
                 SELECT INSERTED.id, 'light', 1
                 FROM INSERTED;
             END;
@@ -32,6 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         // Eliminar el trigger
-        DB::statement('DROP TRIGGER IF EXISTS insert_ajustes');
+        DB::statement('DROP TRIGGER IF EXISTS insert_perfiles');
     }
 };

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('estado')->nullable(false);
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign('id_solicitud')->references('id')->on('Solicitudes')->onDelete('cascade');
-            $table->foreign('estado')->references('id')->on('Estados');
+            $table->foreign('estado')->references('id')->on('Estados')->onDelete('no action');
         });
     }
 
