@@ -9,7 +9,7 @@
     x-data="{toggle:true}"
     @click="toggle=!toggle"
     x-show="toggle"></div>
-<section>
+<section x-data="searchProduct">
     <h3 class="mb-4 font-semibold text-3xl">Nueva Solicitud</h3>
 
 
@@ -19,8 +19,8 @@
         hx-swap="innerHTML"
         hx-trigger="submit">
         @csrf
-        <input type="hidden" value="{{$solicitud['numero']}}" name="numero"/>
-        <input type="hidden" value="{{session('logged.id')}}" name="usuario"/>
+        <input type="hidden" value="{{$solicitud['numero']}}" name="numero" />
+        <input type="hidden" value="{{session('logged.id')}}" name="usuario" />
         <input type="hidden" name="productos" x-bind:value="sendData()">
         <div class="card-title font-mono flex justify-between items-center border-b border-base-300 p-5">
             <h3 class="text-2xl">Solicitud #{{$solicitud['numero']}}</h3>
@@ -69,5 +69,55 @@
         </div>
     </form>
 
+    <dialog id="addProduct" class="p-4 w-full h-full flex justify-center items-center backdrop-blur-xs">
+        <div class="text-base-content card bg-base-100 shadow-2xl border border-base-300 w-lg transition-transform">
+            <div class="card-body">
+                <div class="block">
+                    <svg onclick="toggleModal(addProduct)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="float-end cursor-pointer">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M18 6l-12 12" />
+                        <path d="M6 6l12 12" />
+                    </svg>
+                </div>
+                <div class="card-title mb-4">Nuevo Producto</div>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Descripción del producto</legend>
+                    <input type="text" class="input w-full" name="p" placeholder="Buscar"
+                        x-ref="autocomplete"
+                        hx-get="{{route('api.producto')}}"
+                        hx-trigger="keyup[this.value.trim() !== ''] changed delay:500ms"
+                        @htmx:after-request="getData($event.detail.xhr.response)"
+                        @input="checkInput" />
+                    <p class="label" x-text="amount" style="text-wrap: auto;"></p>
+                </fieldset>
+
+
+                <ul id="product-list" class="list bg-base-100 rounded-box shadow-xl absolute left-6 overflow-x-auto" x-show="hasItems" x-transition.duration.500ms>
+
+                    <template x-for="(item, index) in items" :key="index">
+
+                        <li class="list-row cursor-pointer hover:bg-base-200"
+                            x-text="item.Desc_Producto"
+                            @click="selectItem(item)"></li>
+
+                    </template>
+
+                </ul>
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Cantidad</legend>
+                    <input x-ref="cantidad" type="number" class="input w-full" placeholder="0" min="0" required />
+                </fieldset>
+                <br>
+
+                <div class="flex justify-end">
+                    <button class="btn mr-3" onclick="toggleModal(addProduct)">Cancelar</button>
+                    <button class="btn btn-primary" @click="addProduct">Añadir</button>
+                </div>
+
+            </div>
+        </div>
+    </dialog>
 </section>
 @endsection
