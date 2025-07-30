@@ -96,7 +96,7 @@
 
 </section>
 
-<section class="mt-8 ">
+<section class="mt-8 " x-data="changeState">
   <h3 class="text-xl font-semibold mb-2">Solicitudes</h3>
 
 
@@ -128,18 +128,35 @@
             </span>
           </td>
           <td>Comprador</td>
-          <td>{{date('d-m-Y H:i', strtotime($item->fecha))}}</td>
+          <td>{{date('d-m-Y', strtotime($item->fecha))}}</td>
           <td>
+          <td class="flex gap-6">
+            <div class="tooltip" data-tip="Visualizar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-slate-400" @click="openModal({{json_encode($item->getRelation('productos'))}})">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+              </svg>
+            </div>
+
             <form
               hx-delete="{{route('api.deleteSolicitud',$item->id )}}"
-     
+              hx-trigger="click"
               hx-target="#solicitud-{{ $item->id }}"
-              hx-target="closest tr" hx-swap="outerHTML swap:1s"
-              >
+              hx-target="closest tr" hx-swap="outerHTML swap:1s">
               @csrf
-              <button type="submit" class="btn btn-error">
-                🗑️ Eliminar
-              </button>
+              <div class="tooltip" data-tip="Eliminar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-error">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M4 7l16 0" />
+                  <path d="M10 11l0 6" />
+                  <path d="M14 11l0 6" />
+                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                </svg>
+              </div>
+
             </form>
 
           </td>
@@ -151,6 +168,50 @@
     <p class="text-lg">No hay datos para mostrar</p>
     @endif
   </div>
+
+  <!-- Open the modal using ID.showModal() method -->
+  <dialog id="modal1" class="fixed p-4 w-full h-full flex justify-center items-center backdrop-blur-xs">
+    <div class="text-base-content card bg-base-100 shadow-2xl border border-base-300 w-lg transition-transform">
+
+      <div class="card-body">
+        <div class="block">
+          <svg @click="closeModal" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="float-end cursor-pointer">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+          </svg>
+        </div>
+        <div class="card-title mb-4">Productos</div>
+
+        <div class="overflow-x-auto mb-5">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <template x-for="(groups, index) in products" :key="index">
+                <template x-for="item in groups">
+                  <tr>
+                    <td x-text="item.id_producto"></td>
+                    <td x-text="item.descripcion"></td>
+                    <td x-text="item.cant_solicitada"></td>
+                  </tr>
+                </template>
+              </template>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </dialog>
 
 </section>
 
