@@ -111,7 +111,7 @@
           <th>Estado</th>
           <th>Comprador</th>
           <th>Fecha</th>
-          <th></th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -127,9 +127,9 @@
               {{$item->estado}}
             </span>
           </td>
-          <td>Comprador</td>
+          <td>{{$item->getRelation('comprador')->nombre??'Sin asignar'}}</td>
           <td>{{date('d-m-Y', strtotime($item->fecha))}}</td>
-          <td>
+
           <td class="flex gap-6">
             <div class="tooltip" data-tip="Visualizar">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-slate-400" @click="openModal({{json_encode($item->getRelation('productos'))}})">
