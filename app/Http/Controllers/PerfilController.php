@@ -14,21 +14,22 @@ class PerfilController extends Controller
 
         $perfil = Perfil::find(session('logged.id'));
 
-        if (isset($mode)) {
+        if (is_string($mode) && ($mode == 'dim' || $mode == 'light')) {
             $perfil->mode = $mode;
             $perfil->save();
 
             session()->put('logged.theme', $mode);
+            $reload = true;
         }
 
-        if (isset($notify)) {
+        if (isset($notify) && ($notify == 1 || $notify == 0)) {
             $perfil->notifications = $notify;
             $perfil->save();
 
             session()->put('logged.notify', $notify);
+            $reload = true;
         }
-        $referer = $request->header('Referer');
 
-        return redirect()->to($referer);
+        return response()->json(['reload' => $reload ?? false]);
     }
 }
