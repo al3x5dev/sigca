@@ -25,9 +25,17 @@ flex flex-col
         <!-- Logo -->
         <a href="{{url('/')}}" class="flex items-center justify-center ">
             <span class="">
-                <img class="w-[38px]"  x-bind:src="darkMode ? '{{ asset('assets/img/logo-dark.png') }}' : '{{ asset('assets/img/logo.png') }}'">
+                <img class="w-[38px]"
+                src="
+                @if (session('logged.theme')=='light')
+                    {{asset('assets/img/logo.png') }}
+                @else
+                    {{asset('assets/img/logo-dark.png')}}
+                @endif">
             </span>
-            <span class="ml-3 text-3xl font-semibold" x-bind:class="{ 'text-white': darkMode }">SIGCA</span>
+            <span class="ml-3 text-3xl font-semibold @if (session('logged.theme')!='light')
+                text-white
+            @endif">SIGCA</span>
         </a>
 
         <span class="opacity-0">Sigca</span>
@@ -39,8 +47,9 @@ flex flex-col
             background-color: var(--color-primary) !important;
             color: var(--color-primary-content);
         }
+
         #sidebar-menu>li:hover {
-            background-color: color-mix(in oklab,var(--color-base-content)20%,transparent);
+            background-color: color-mix(in oklab, var(--color-base-content)20%, transparent);
         }
     </style>
 
@@ -97,7 +106,28 @@ flex flex-col
         @break
 
         @case('Comprador')
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
+            <a href="{{route('compra.dashboard')}}" class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
+                    <path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
+                    <path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
+                    <path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
+                </svg>
+                Panel de Control
+            </a>
+        </li>
 
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'checkSolicitudes' ? 'active' : '' }}">
+            <a href="{{$page['title'] != 'newSolicitud'?route('user.solicitud'): ''}}" class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2" />
+                </svg>
+                Solicitudes
+            </a>
+        </li>
         @break
 
         @default
