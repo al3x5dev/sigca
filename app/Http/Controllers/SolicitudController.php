@@ -13,7 +13,8 @@ class SolicitudController extends Controller
      */
     public function dashboard(Request $request)
     {
-        $items = Solicitud::join(
+        $items = Solicitud::with(['productos'])
+        ->join(
             'SolicitudesHistorico',
             'Solicitudes.id',
             '=',
