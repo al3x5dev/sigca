@@ -1,40 +1,18 @@
 /**
- * CHANGE THEME
- * @returns 
+ * Change Profile
  */
-function scheme() {
-    return {
-        darkMode: false,
-        theme: 'dim',
-        toggleAttr: function (mode = null) {
-            let html = document.querySelector('html')
-            if (mode != null) {
-                html.setAttribute('data-theme', mode);
-                return;
-            }
-            html.removeAttribute('data-theme');
-        },
-        changeMode: function () {
-            this.darkMode = !this.darkMode;
-            if (this.darkMode === true) {
-                this.toggleAttr(this.theme);
-                localStorage.setItem('schemeMode', 'dark');
-            } else {
-                this.toggleAttr();
-                localStorage.setItem('schemeMode', 'light');
-            }
-        },
-        init() {
-            if (localStorage.getItem('schemeMode') != null) {
-                if (localStorage.getItem('schemeMode') == 'dark') {
-                    this.darkMode = true;
-                    this.toggleAttr(this.theme);
-                    return;
-                }
-                this.toggleAttr();
-            }
+function profile(url) {
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        if (data.reload) {
+            // Recargar la página
+            location.reload();
         }
-    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 /**
@@ -178,12 +156,56 @@ function searchProduct() {
 
 
 /**
- * Modal
+ * Modal Add productos
  */
 function toggleModal(id) {
+    const body = document.body;
+    const main = document.getElementById('container-main');
     if (id.hasAttribute('open')) {
+        body.style.overflow = '';
+        main.style.position = '';
         id.removeAttribute('open');
         return 0;
     }
+    body.style.overflow = 'hidden';
+    main.style.position = 'relative';
     id.setAttribute('open', 'true');
+}
+
+
+/**
+ * Modal Comprador cambiar estado solicitud
+ */
+function changeState() {
+    return {
+        products: [],
+        modal: document.getElementById('modal1'),
+        openModal(item) {
+            // Convertir el JSON a un objeto si no lo es ya
+            let product = typeof item === 'string' ? JSON.parse(item) : item;
+
+            product.forEach(i => {
+                if (i.id_producto.startsWith("ID_")) {
+                    i.id_producto = 'Sin código';
+                }
+            });
+
+            // Agregar el objeto al array products
+            this.products.push(product);
+
+            toggleModal(this.modal);
+
+
+        },
+        closeModal() {
+            this.products = [];
+            toggleModal(this.modal);
+        },
+        hasProducts() {
+            return this.products.length > 0
+        },
+        sendData(){
+            
+        }
+    };
 }
