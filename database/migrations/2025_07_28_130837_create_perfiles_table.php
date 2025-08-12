@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('notifications')->default(false);
 
             $table->foreign('id')->references('id')->on('Usuarios')->onDelete('cascade');
+            $table->primary('id');
         });
     }
 
