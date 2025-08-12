@@ -16,13 +16,11 @@ return new class extends Migration
             $table->integer('id')->primary()->nullable(false);
             $table->string('nombre',150)->nullable(false);
             $table->string('cargo',150)->nullable(false);
-            $table->integer('rol')->nullable(false);
             $table->string('usuario',100)->nullable(false);
+            $table->string('password')->nullable();
             $table->dateTime('creado')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('ultm_acc')->nullable();
             $table->boolean('activo')->default(true);
-
-            $table->foreign('rol')->references('id')->on('Roles')->onDelete('no action');
         });
     }
 
