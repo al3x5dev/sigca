@@ -16,7 +16,7 @@ return new class extends Migration
         DB::statement("
             CREATE PROCEDURE sp_InsertarUsuario
                 @exp INT,
-                @rol INT,
+                @roles NVARCHAR(MAX),
                 @usuario VARCHAR(80)
             AS
             BEGIN
@@ -36,7 +36,29 @@ return new class extends Migration
                 FROM SERVERSQL.sigerh_gx.dbo.v_CargoTrabajadores WHERE expediente = @exp;
 
                 -- Insertar usuarios
-                INSERT INTO Usuarios(id, nombre, cargo, rol, usuario) VALUES(@exp, @nombre, @cargo, @rol, @usuario);
+                INSERT INTO Usuarios(id, nombre, cargo, usuario) VALUES(@exp, @nombre, @cargo, @usuario);
+                
+                -- Insertar roles
+                -- DECLARE @sql NVARCHAR(MAX);
+                DECLARE @rol INT;
+
+                -- Crear una tabla temporal para almacenar los roles
+                CREATE TABLE #Roles_Temp (rol INT);
+
+                -- Dividir la cadena de roles y llenar la tabla temporal
+                WHILE LEN(@roles) > 0
+                BEGIN
+                    SET @rol = CAST(LEFT(@roles, CHARINDEX(',', @roles + ',') - 1) AS INT);
+                    INSERT INTO #Roles_Temp (rol) VALUES (@rol);
+                    SET @roles = STUFF(@roles, 1, CHARINDEX(',', @roles + ','), '');
+                END
+                
+                -- Insertar en la tabla Accesos
+                INSERT INTO Accesos (id_usuario, id_rol)
+                    SELECT @exp, rol FROM #Roles_Temp;
+                
+                -- Limpiar la tabla temporal
+                DROP TABLE #Roles_Temp;
             END;
         ");
 
