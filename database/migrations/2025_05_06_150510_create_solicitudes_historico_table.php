@@ -13,12 +13,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('SolicitudesHistorico', function (Blueprint $table) {
-            $table->id();
             $table->bigInteger('id_solicitud')->nullable(false);
             $table->integer('estado')->nullable(false);
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->foreign('id_solicitud')->references('id')->on('Solicitudes')->onDelete('cascade');
             $table->foreign('estado')->references('id')->on('Estados')->onDelete('no action');
+
+            $table->primary(['id_solicitud','estado']);
         });
     }
 
