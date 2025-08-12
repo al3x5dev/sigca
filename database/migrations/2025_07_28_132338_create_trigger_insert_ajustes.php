@@ -20,7 +20,7 @@ return new class extends Migration
             AS
             BEGIN
                 INSERT INTO Perfiles (id, mode, notifications)
-                SELECT INSERTED.id, 'light', 1
+                SELECT INSERTED.id, 'light', 0
                 FROM INSERTED;
             END;
         ");
