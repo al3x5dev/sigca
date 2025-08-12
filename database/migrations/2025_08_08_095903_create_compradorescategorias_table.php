@@ -17,6 +17,9 @@ return new class extends Migration
 
             $table->foreign('id_comprador')->references('id')->on('Usuarios')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('id_categoria')->references('id')->on('Categorias')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->primary(['id_comprador', 'id_categoria']);
+
         });
     }
 
