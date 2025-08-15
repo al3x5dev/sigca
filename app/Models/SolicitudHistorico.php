@@ -13,12 +13,18 @@ class SolicitudHistorico extends Model
     protected $table = 'SolicitudesHistorico';
 
     protected $fillable = [
-        'id',
         'id_solicitud',
         'estado',
         'fecha',
     ];
 
+    // Deshabilitar la clave primaria automática
+    public $incrementing = false;
+
+    // Definir las columnas de la clave primaria compuesta
+    protected $primaryKey = ['id_solicitud', 'estado'];
+
+    // Deshabilitar los timestamps
     public $timestamps = false;
 
     public function estado() : BelongsTo

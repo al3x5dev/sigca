@@ -10,7 +10,7 @@ class Perfil extends Model
 {
     use HasFactory;
 
-    protected $table = 'perfiles';
+    protected $table = 'Perfiles';
     protected $fillable = [
         'id',
         'mode',

@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Rol extends Model
 {
     use HasFactory;
 
-    protected $table = 'roles';
+    protected $table = 'Roles';
     protected $fillable = ['id', 'rol'];
     public $timestamps = false;
 
-    public function usuario() : HasMany
+    public function usuario() : BelongsToMany
     {
-        return $this->hasMany(Usuario::class,'rol');
+        return $this->belongsToMany(Usuario::class,'Accesos','id_rol','id_usuario');
     }
 }

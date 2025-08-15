@@ -11,7 +11,7 @@ class Solicitud extends Model
 {
     use HasFactory;
 
-    protected $table = 'solicitudes';
+    protected $table = 'Solicitudes';
 
     protected $fillable = [
         'id',
