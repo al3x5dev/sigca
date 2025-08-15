@@ -140,7 +140,8 @@
             </div>
 
             <div class="tooltip" data-tip="Aprobar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-teal-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-teal-300"
+              x-on:click="approve({{$item->id}})">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M14 3v4a1 1 0 0 0 1 1h4" />
                 <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
@@ -149,7 +150,8 @@
             </div>
 
             <div class="tooltip" data-tip="Cancelar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-error">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-error"
+              x-on:click="cancel({{$item->id}})">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M4 7l16 0" />
                 <path d="M10 11l0 6" />
@@ -169,48 +171,7 @@
   </div>
 
   <!-- Open the modal  -->
-  <dialog id="modal1" class="fixed p-4 w-full h-full flex justify-center items-center backdrop-blur-xs">
-    <div class="text-base-content card bg-base-100 shadow-2xl border border-base-300 w-lg transition-transform">
-
-      <div class="card-body">
-        <div class="block">
-          <svg @click="closeModal" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="float-end cursor-pointer">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M18 6l-12 12" />
-            <path d="M6 6l12 12" />
-          </svg>
-        </div>
-        <div class="card-title mb-4">Productos</div>
-
-        <div class="overflow-x-auto mb-5">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Descripción</th>
-                <th>Cantidad</th>
-              </tr>
-            </thead>
-            <tbody>
-
-              <template x-for="(groups, index) in products" :key="index">
-                <template x-for="item in groups">
-                  <tr>
-                    <td x-text="item.id_producto"></td>
-                    <td x-text="item.descripcion"></td>
-                    <td x-text="item.cant_solicitada"></td>
-                  </tr>
-                </template>
-              </template>
-
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-    </div>
-  </dialog>
+  @include('partials.products-modal')
 
 </section>
 

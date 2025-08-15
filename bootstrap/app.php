@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'ldap.auth'=>LdapAuthMiddleware::class,
-            'role' => RoleMiddleware::class,
+            //'role' => RoleMiddleware::class,
             'no.cache' => NoCache::class
         ]);
     })

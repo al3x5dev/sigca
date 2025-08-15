@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SolicitudController extends Controller
 {
@@ -13,26 +14,22 @@ class SolicitudController extends Controller
      */
     public function dashboard(Request $request)
     {
-        $items = Solicitud::with(['productos','comprador'])
-        ->join(
-            'SolicitudesHistorico',
-            'Solicitudes.id',
-            '=',
-            'SolicitudesHistorico.id_solicitud'
-        )
-            ->join(
-                'Estados',
-                'SolicitudesHistorico.estado',
-                '=',
-                'Estados.id'
-            )
+
+        $items = Solicitud::with(['productos', 'comprador'])
+            ->join('SolicitudesHistorico as sh', 'Solicitudes.id', '=', 'sh.id_solicitud')
+            ->join('Estados as e', 'sh.estado', '=', 'e.id')
+            ->join(DB::raw('(SELECT id_solicitud, MAX(estado) as max_estado FROM SolicitudesHistorico GROUP BY id_solicitud) as max_sh'), function ($join) {
+                $join->on('sh.id_solicitud', '=', 'max_sh.id_solicitud')
+                    ->on('sh.estado', '=', 'max_sh.max_estado');
+            })
             ->select(
                 'Solicitudes.*',
-                'SolicitudesHistorico.estado as historico_estado',
-                'SolicitudesHistorico.fecha',
-                'Estados.id as estado_id',
-                'Estados.estado'
-            )->where('id_usuario', session('logged.id'))
+                'sh.fecha',
+                'e.id as estado_id',
+                'e.estado',
+                'sh.estado as historico_estado'
+            )
+            ->where('Solicitudes.id_usuario', session('logged.id'))
             ->get();
 
         $pendiente = 0;
@@ -46,10 +43,10 @@ class SolicitudController extends Controller
                     case 1:
                         $pendiente++;
                         break;
-                    case 2:
+                    case 3:
                         $completado++;
                         break;
-                    case 3:
+                    case 2:
                         $proceso++;
                         break;
                     case 4:

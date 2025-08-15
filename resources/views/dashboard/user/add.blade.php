@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="toast toast-top toast-end z-10 cursor-pointer" id="form-response"
+<div class="toast toast-top toast-end z-6 md:max-w-6/10 cursor-pointer" id="form-response"
     x-data="{toggle:true}"
     @click="toggle=!toggle"
     x-show="toggle"></div>

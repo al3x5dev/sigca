@@ -3,16 +3,16 @@
  */
 function profile(url) {
     fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        if (data.reload) {
-            // Recargar la página
-            location.reload();
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.reload) {
+                // Recargar la página
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 /**
@@ -180,6 +180,8 @@ function changeState() {
     return {
         products: [],
         modal: document.getElementById('modal1'),
+        api: '/api/history/state/',
+        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         openModal(item) {
             // Convertir el JSON a un objeto si no lo es ya
             let product = typeof item === 'string' ? JSON.parse(item) : item;
@@ -204,8 +206,43 @@ function changeState() {
         hasProducts() {
             return this.products.length > 0
         },
-        sendData(){
-            
+        approve(id) {
+
+            const url = this.api + id;
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': this.csrf
+                },
+                body: JSON.stringify({ state: 2 })  // Datos a enviar
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Respuesta no OK: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    //message = 'Respuesta del servidor: ' + JSON.stringify(data);
+                    console.log(data.message);
+                    
+                })
+                .catch(error => {
+                    this.message = 'Error: ' + error;
+                });
+
+        },
+        cancel(id) {
+            /*fetch('')
+                .then()
+                .then(data => {
+
+                })
+                .catch(error => console.error(error)
+                );*/
+            console.log(id);
+
         }
     };
 }

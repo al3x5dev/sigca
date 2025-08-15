@@ -6,6 +6,7 @@ use App\Models\Solicitud;
 use App\Models\SolicitudHistorico;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CompradorController extends Controller
 {
@@ -13,30 +14,30 @@ class CompradorController extends Controller
     {
 
         $items = Solicitud::with(['usuario', 'historico.estado', 'productos'])
-            ->join(
-                'SolicitudesHistorico',
-                'SolicitudesHistorico.id_solicitud',
-                '=',
-                'Solicitudes.id'
-            )
-            ->join(
-                'Usuarios',
-                'Usuarios.id',
-                '=',
-                'Solicitudes.id_usuario'
-            )->join(
-                'Estados',
-                'Estados.id',
-                '=',
-                'SolicitudesHistorico.estado'
-            )->select(
-                'Solicitudes.*',
-                /*'Estados.estado',
-                'Usuarios.nombre as hecho_por',
-                'Usuarios.cargo',
-                'Estados.id as estado_id'*/
-            )->where('Estados.id', 1)
-            ->get();
+        ->join(
+            'SolicitudesHistorico as h',
+            'Solicitudes.id',
+            '=',
+            'h.id_solicitud'
+        )
+        ->where('h.estado',1)
+        ->whereNotExists(function($query){
+            $query->select(DB::raw(1))
+              ->from('SolicitudesHistorico')
+              ->whereRaw('CAST(SolicitudesHistorico.id_solicitud AS BIGINT) = Solicitudes.id')
+              //->where('SolicitudesHistorico.id_solicitud', 'Solicitudes.id')
+              ->where('SolicitudesHistorico.estado', '<>', 1);
+        })
+        ->get();
+            /*Solicitud::with(['usuario', 'historico.estado', 'productos'])
+            ->whereHas('historico', function ($query) {
+                $query->where('estado', 1)
+                    ->orderBy('fecha', 'desc')
+                    ->first();
+            })
+            ->get()*/;
+
+            //dd($items);
 
         // Reemplaza con la fecha actual
         $lastSessionDate = session('logged.last') ?? Carbon::now();
