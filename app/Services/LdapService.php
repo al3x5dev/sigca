@@ -17,14 +17,14 @@ final class LdapService
     {
 
         $this->user = !empty($user)
-            ? "$user@" . env('LDAP_DOMAIN')
+            ? "$user@" . config('ldap.domain')
             : throw new \ErrorException("Usuario LDAP nulo");
         $this->pass = $pass ?? throw new \ErrorException("Contraseña LDAP nula");
 
         $this->connect();
     }
 
-    public static function init(string $user = null, string $pass = null): static
+    public static function init(?string $user = null, ?string $pass = null): static
     {
         if (is_null(self::$init)) {
             self::$init = new self($user, $pass);
@@ -87,6 +87,7 @@ final class LdapService
             return $results;
         }
         $this->close();
+        return [];
     }
     
     /**
