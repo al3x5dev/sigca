@@ -1,5 +1,6 @@
 <?php
 
+use Dotenv\Dotenv;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Llamar al .env
+        (Dotenv::createImmutable(dirname(__DIR__,2)))->load();
+
         // Insertar roles
         DB::statement("INSERT INTO Roles (rol) VALUES
         ('Supervisor'),
@@ -43,7 +47,7 @@ return new class extends Migration
         $pass = Hash::make(env('APP_ADMIN_PASS', 'mypass'));
 
         DB::statement(
-            "INSERT INTO Usuarios (id,nombre, cargo, usuario, password) VALUES (1,'SigcaAdmin', 'Administrador del Sistema', 'admin', '$pass')"
+            "INSERT INTO Usuarios (id,nombre, cargo, usuario, password) VALUES (1,'Admin', 'Administrador del Sistema', 'admin', '$pass')"
         );
 
         DB::statement("INSERT INTO Accesos (id_usuario,id_rol) VALUES (1,1)");
