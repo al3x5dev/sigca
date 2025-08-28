@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,15 +29,20 @@ class LdapAuthMiddleware
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             return redirect()->route('login')->with('error', 'Su cuenta no está activa.');
+        } 
+        
+        if ($user instanceof Model) {
+            $user->loadMissing(['rol','perfil']);
         }
 
         $response = $next($request);
+
 
         // Aplicar headers de no-cache a la RESPONSE
         $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
         $response->headers->set('Pragma', 'no-cache');
         $response->headers->set('Expires', 'Fri, 01 Jan 1970 00:00:00 GMT');
-        $response->headers->set('Clear-Site-Data', '"cache", "cookies", "storage"');
+        //$response->headers->set('Clear-Site-Data', '"cache", "cookies", "storage"');
 
         return $response;
     }
