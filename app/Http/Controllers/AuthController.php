@@ -31,11 +31,11 @@ class AuthController extends Controller
             return back()->withErrors(['credentials' => "<b>$user</b> no es un usuario valido del sistema."]);
         }
 
-        $login = ($user == 'admin')
+        try {
+            $login = ($user == 'admin')
             ? Hash::check($pass, $userDb->password)
             : (LdapService::init($user, $pass))->auth();
 
-        try {
             if ($login) {
                 // Actualizar el campo fecha_ultimo_acceso con la fecha y hora actual
                 $userDb->ultm_acc = Carbon::now(); // O usa ahora() si prefieres
@@ -46,6 +46,7 @@ class AuthController extends Controller
 
                 return redirect()->route('dashboard');
             }
+            throw new \Exception('Fail basic login');
         } catch (\Throwable $th) {
             Log::notice($th->getMessage(), [$userDb->usuario => $userDb->nombre]);
             return back()->withErrors(['credentials' => 'Contraseña incorrecta. Contacte al administrador.']);
