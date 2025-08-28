@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('Perfiles', function (Blueprint $table) {
             $table->integer('id')->nullable(false);
-            $table->string('mode',50)->default('light');
+            $table->string('theme',50)->default('light');
             $table->boolean('notifications')->default(false);
 
             $table->foreign('id')->references('id')->on('Usuarios')->onDelete('cascade');

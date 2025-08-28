@@ -4,21 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Perfil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PerfilController extends Controller
 {
     public function index(Request $request)
     {
-        $mode = $request->query('m');
+        $theme = $request->query('m');
         $notify = $request->query('n');
 
-        $perfil = Perfil::find(session('logged.id'));
+        $perfil = Perfil::find(Auth::id());
 
-        if (is_string($mode) && ($mode == 'dim' || $mode == 'light')) {
-            $perfil->mode = $mode;
+        if (is_null($perfil)) {
+             return response()->json(['error' => 'Perfil no encontrado'], 404);
+        }
+
+        if (isset($theme) &&($theme == 'dim' || $theme == 'light')) {
+            $perfil->theme = $theme;
             $perfil->save();
 
-            session()->put('logged.theme', $mode);
             $reload = true;
         }
 
@@ -26,7 +30,6 @@ class PerfilController extends Controller
             $perfil->notifications = $notify;
             $perfil->save();
 
-            session()->put('logged.notify', $notify);
             $reload = true;
         }
 

@@ -19,8 +19,8 @@ return new class extends Migration
             AFTER INSERT
             AS
             BEGIN
-                INSERT INTO Perfiles (id, mode, notifications)
-                SELECT INSERTED.id, 'light', 0
+                INSERT INTO Perfiles (id)
+                SELECT INSERTED.id
                 FROM INSERTED;
             END;
         ");

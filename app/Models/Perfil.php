@@ -13,7 +13,7 @@ class Perfil extends Model
     protected $table = 'Perfiles';
     protected $fillable = [
         'id',
-        'mode',
+        'theme',
         'notifications'
     ];
     public $timestamps = false;
