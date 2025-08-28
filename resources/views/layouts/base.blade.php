@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="{{session('logged.theme')}}">
+<html lang="en" data-theme="{{Auth::user()->perfil->theme}}">
 
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,6 @@
 </head>
 
 <body class="bg-base-300" x-data="menu()">
-
 
 
     @if ($page['title']=='newSolicitud')
@@ -94,7 +93,7 @@
                                     }
                                 </style>
                                 @endif
-                                @if (session('logged.notify'))
+                                @if (Auth::user()->perfil->notifications)
                                 <div class="dropdown dropdown-end ">
                                     <div tabindex="0" role="button" class="btn btn-circle btn-ghost m-1">
                                         <span style="display: none;" id="icon-bell"></span>
@@ -139,16 +138,16 @@
                                 menu
                                 z-1 w-52 p-2
                                 shadow-xl border border-white/5">
-                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{session('logged.theme') == 'light' ? 'dim' : 'light'}}`)">
+                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'light' ? 'dim' : 'light'}}`)">
                                                 Activar modo
-                                                @if (session('logged.theme')=='light')
+                                                @if (Auth::user()->perfil->theme=='light')
                                                 oscuro
                                                 @else
                                                 claro
                                                 @endif
                                             </a></li>
-                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?n={{session('logged.notify') == 1 ? 0 : 1}}`)">
-                                                @if (session('logged.notify'))
+                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?n={{Auth::user()->perfil->notifications == 1 ? 0 : 1}}`)">
+                                                @if (Auth::user()->perfil->notifications)
                                                 Desactivar
                                                 @else
                                                 Activar
