@@ -26,14 +26,14 @@ flex flex-col
         <a href="{{url('/')}}" class="flex items-center justify-center ">
             <span class="">
                 <img class="w-[38px]"
-                src="
-                @if (session('logged.theme')=='light')
+                    src="
+                @if (Auth::user()->perfil->theme=='light')
                     {{asset('assets/img/logo.png') }}
                 @else
                     {{asset('assets/img/logo-dark.png')}}
                 @endif">
             </span>
-            <span class="ml-3 text-3xl font-semibold @if (session('logged.theme')!='light')
+            <span class="ml-3 text-3xl font-semibold @if (Auth::user()->perfil->theme!='light')
                 text-white
             @endif">SIGCA</span>
         </a>
@@ -54,7 +54,7 @@ flex flex-col
     </style>
 
     <ul class="mt-8" id="sidebar-menu" style="flex: 1 0 auto;">
-        @switch(session('logged.rol'))
+        @switch('Usuario')
         @case('Supervisor')
         <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
             <a href="" class="flex items-center">
@@ -107,7 +107,7 @@ flex flex-col
 
         @case('Comprador')
         <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
-            <a href="{{route('compra.dashboard')}}" class="flex items-center">
+            <a href="{{route('home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
@@ -120,7 +120,7 @@ flex flex-col
         </li>
 
         <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'checkSolicitudes' ? 'active' : '' }}">
-            <a href="{{$page['title'] != 'newSolicitud'?route('user.solicitud'): ''}}" class="flex items-center">
+            <a href="{{$page['title'] != 'newSolicitud'?route('home'): ''}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2" />
@@ -132,7 +132,7 @@ flex flex-col
 
         @default
         <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
-            <a href="{{route('user.dashboard')}}" class="flex items-center">
+            <a href="{{route('home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
@@ -145,7 +145,7 @@ flex flex-col
         </li>
 
         <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'newSolicitud' ? 'active' : '' }}">
-            <a href="{{$page['title'] != 'newSolicitud'?route('user.solicitud'): ''}}" class="flex items-center">
+            <a href="{{$page['title'] != 'newSolicitud'?route('home'): ''}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2" />
@@ -161,11 +161,17 @@ flex flex-col
 
     <ul tabindex="0">
         <li class="rounded-md w-full p-1.5 font-semibold text-red-500 hover:bg-red-200 transition-colors ease-in-out">
-            <a class="flex items-center" href="{{route('off')}}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M7 6a7.75 7.75 0 1 0 10 0" />
-                    <path d="M12 4l0 8" />
-                </svg>Salir</a>
+            <form action="{{route('logout')}}" method="post">
+                @csrf
+                <button type="submit" class="flex items-center cursor-pointer w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M7 6a7.75 7.75 0 1 0 10 0" />
+                        <path d="M12 4l0 8" />
+                    </svg>Salir
+                </button>
+            </form>
+
         </li>
     </ul>
 
