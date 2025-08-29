@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGCA - Inicir Sesión</title>
+    <title>Inicir Sesión | {{env('APP_NAME')}}</title>
     <!-- FAVICON - ADAPTATIVO -->
     <link rel="icon" type="image/svg+xml" href="{{asset('assets/img/favicon.svg')}}" />
 

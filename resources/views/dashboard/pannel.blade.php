@@ -1,6 +1,6 @@
 @extends('layouts.base')
 
-@section('title', $page['name'].' - '. env('APP_NAME'))
+@section('title', $page['name'].' | '. env('APP_NAME'))
 
 
 @section('content')
