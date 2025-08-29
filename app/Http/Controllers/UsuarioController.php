@@ -8,6 +8,13 @@ class UsuarioController extends Controller
 {
     public function index(Request $request)
     {
-        return view('dashboard.pannel');
+        $data = [
+            'page' => [
+                'title' => 'dashboard',
+                'name' => 'Panel de Control'
+            ]
+        ];
+
+        return view('dashboard.pannel',$data);
     }
 }
