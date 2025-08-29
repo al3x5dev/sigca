@@ -94,7 +94,7 @@ flex flex-col
 
         @if ($isComprador)
             <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'gestor' ? 'active' : '' }}">
-            <a href="" class="flex items-center">
+            <a href="{{route('gestion.home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /><path d="M9 9h1" /><path d="M9 13h6" /><path d="M9 17h3" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
                 Gestión
             </a>
@@ -103,7 +103,7 @@ flex flex-col
 
         @if ($isSupervisor)
             <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'admin' ? 'active' : '' }}">
-            <a href="" class="flex items-center">
+            <a href="{{route('admin.home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 3v4a.997 .997 0 0 0 1 1h4" /><path d="M11 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /><path d="M8 9h1" /><path d="M8 12.994l3 0" /><path d="M8 16.997l2 0" /><path d="M21 15.994c0 4 -2.5 6 -3.5 6s-3.5 -2 -3.5 -6c1 0 2.5 -.5 3.5 -1.5c1 1 2.5 1.5 3.5 1.5" /></svg>
                 Supervisión
             </a>
