@@ -17,11 +17,6 @@
     <!-- HTMX -->
     <script src="{{asset('assets/js/htmx.min.js')}}" defer></script>
 
-    @if ($page['title']=='pannelComprador')
-    <!-- APEXCHARTS -->
-    <script src="{{asset('assets/js/apexcharts.min.js')}}"></script>
-    @endif
-
 
     <!-- TAILWIND.CSS -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
@@ -37,29 +32,24 @@
 <body class="bg-base-300" x-data="menu()">
 
 
-    @if ($page['title']=='newSolicitud')
-    <main class="min-h-dvh max-w-dvw">
-        @else
-        <main class="min-h-dvh max-w-dvw">
-            @endif
 
+        <main class="min-h-dvh max-w-dvw">
 
 
             @include('partials.sidebar')
 
             <div id="container-main" class="bg-base-100 fixed md:top-2.5 h-[100vh] w-auto 
-        transition-[margin-left]
-        duration-300
-        ease-in-out
-        md:rounded-t-xl md:mr-3"
+            transition-[margin-left]
+            duration-300
+            ease-in-out
+            md:rounded-t-xl md:mr-3"
                 x-bind:class="{
-        'ml-[16em]':isDesktop && rail,
-        'ml-[0.75em]': isDesktop && !rail,
-        
-        }" style="width: -moz-available;">
+            'ml-[16em]':isDesktop && rail,
+            'ml-[0.75em]': isDesktop && !rail,
+            }" style="width: -moz-available;">
 
 
-                <div class="h-full overflow-auto">
+                <div class="h-full overflow-auto grid grid-rows-[64px] gap-4">
 
                     <nav class="px-4 py-2 backdrop-blur-xl bg-base-100/70 sticky top-0 md:rounded-t-xl z-5">
                         <div class="flex justify-between items-center">
@@ -138,9 +128,9 @@
                                 menu
                                 z-1 w-52 p-2
                                 shadow-xl border border-white/5">
-                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'light' ? 'dim' : 'light'}}`)">
+                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'lofi' ? 'dim' : 'lofi'}}`)">
                                                 Activar modo
-                                                @if (Auth::user()->perfil->theme=='light')
+                                                @if (Auth::user()->perfil->theme=='lofi')
                                                 oscuro
                                                 @else
                                                 claro
@@ -161,7 +151,7 @@
                         </div>
                     </nav>
 
-                    <div class="py-4 lg:py-8 px-4 xl:px-24 lg:px-12 md:px-6">
+                    <div class="px-4 xl:px-24 lg:px-12 md:px-6 w-full h-full">
                         @yield('content')
                     </div>
                 </div>
