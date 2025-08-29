@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\LdapAuthMiddleware;
-use App\Http\Middleware\LoadUserRelationsMiddleware;
 use App\Http\Middleware\NoCache;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
