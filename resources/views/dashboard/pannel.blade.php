@@ -5,8 +5,6 @@
 
 @section('content')
 
-
-<!-- Estados de las Solicitudes-->
 <section class="flex items-center justify-center my-10 md:mt-20 lg:mt-40">
   <div class="flex flex-col justify-center">
     <div class="flex flex-col items-center">
@@ -58,7 +56,7 @@
           </div>
       </a>
 
-      <a href="" class="card bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition-all:200ms pannel-card w-72 text-cyan-900 rounded-3xl">
+      <a onclick="toggleModal('newProducts')" class="card bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition-all:200ms pannel-card w-72 text-cyan-900 rounded-3xl cursor-pointer">
           <div class="card-body">
             <div class="flex items-center justify-between">
 
@@ -120,5 +118,5 @@
     </div>
   </div>
 </section>
-
+@include('partials.modal-new-products')
 @endsection
