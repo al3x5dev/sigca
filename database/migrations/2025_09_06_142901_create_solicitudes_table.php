@@ -17,10 +17,12 @@ return new class extends Migration
             $table->string('numero',10)->nullable(false)->unique();
             $table->integer('id_usuario')->nullable(false);
             $table->integer('id_comprador')->nullable(true);
+            $table->integer('categoria')->nullable(true);
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->foreign('id_usuario')->references('id')->on('Usuarios')->onDelete('no action');
             $table->foreign('id_comprador')->references('id')->on('Usuarios')->onDelete('no action');
+            $table->foreign('categoria')->references('id')->on('Categorias')->onDelete('no action');
         });
     }
 
