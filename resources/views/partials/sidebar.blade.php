@@ -1,4 +1,4 @@
-<aside class="fixed left-0 z-30
+<aside id="sidebar" class="fixed left-0 z-30
 h-full bg-base-300
 transition-all duration-300 ease-in-out
 px-4 md:pt-4 md:pb-8 py-2  md:mt-2.5
@@ -53,8 +53,22 @@ flex flex-col
         }
     </style>
 
+        @php
+            $isUsuario = false;
+            $isComprador = false;
+            $isSupervisor = false;
+            foreach (Auth::user()->rol as $role) {
+                match($role->rol){
+                    'Usuario'=> $isUsuario = true,
+                    'Comprador'=> $isComprador = true,
+                    'Supervisor'=> $isSupervisor = true,
+                };
+            }
+            $pg=$page['title']??''
+        @endphp
+
     <ul class="mt-8" id="sidebar-menu" style="flex: 1 0 auto;">
-        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'dashboard' ? 'active' : '' }}">
+        <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $pg == 'dashboard' ? 'active' : '' }}">
             <a href="{{route('dashboard')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -67,21 +81,8 @@ flex flex-col
             </a>
         </li>
 
-        @php
-            $isUsuario = false;
-            $isComprador = false;
-            $isSupervisor = false;
-            foreach (Auth::user()->rol as $role) {
-                match($role->rol){
-                    'Usuario'=> $isUsuario = true,
-                    'Comprador'=> $isComprador = true,
-                    'Supervisor'=> $isSupervisor = true,
-                };
-            }
-        @endphp
-
         @if ($isUsuario)
-            <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'solicitud' ? 'active' : '' }}">
+            <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $pg == 'solicitud' ? 'active' : '' }}">
             <a href="{{route('solicitud.home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -93,7 +94,7 @@ flex flex-col
         @endif
 
         @if ($isComprador)
-            <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'gestor' ? 'active' : '' }}">
+            <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $pg == 'gestor' ? 'active' : '' }}">
             <a href="{{route('gestion.home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M12 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /><path d="M9 9h1" /><path d="M9 13h6" /><path d="M9 17h3" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
                 Gestión
@@ -102,7 +103,7 @@ flex flex-col
         </li>
 
         @if ($isSupervisor)
-            <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $page['title'] == 'admin' ? 'active' : '' }}">
+            <li class="my-3 p-1.5 rounded-md font-semibold transition-[background-color] {{ $pg == 'admin' ? 'active' : '' }}">
             <a href="{{route('admin.home')}}" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 3v4a.997 .997 0 0 0 1 1h4" /><path d="M11 21h-5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v3.5" /><path d="M8 9h1" /><path d="M8 12.994l3 0" /><path d="M8 16.997l2 0" /><path d="M21 15.994c0 4 -2.5 6 -3.5 6s-3.5 -2 -3.5 -6c1 0 2.5 -.5 3.5 -1.5c1 1 2.5 1.5 3.5 1.5" /></svg>
                 Supervisión
