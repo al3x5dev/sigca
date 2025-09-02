@@ -128,9 +128,9 @@
                                 menu
                                 z-1 w-52 p-2
                                 shadow-xl border border-white/5">
-                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'lofi' ? 'dim' : 'lofi'}}`)">
+                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'light' ? 'dim' : 'light'}}`)">
                                                 Activar modo
-                                                @if (Auth::user()->perfil->theme=='lofi')
+                                                @if (Auth::user()->perfil->theme=='light')
                                                 oscuro
                                                 @else
                                                 claro
