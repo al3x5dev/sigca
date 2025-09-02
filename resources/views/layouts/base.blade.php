@@ -49,7 +49,7 @@
             }" style="width: -moz-available;">
 
 
-                <div class="h-full overflow-auto grid grid-rows-[64px] gap-4">
+                <div class="h-full overflow-auto grid grid-rows-[64px]">
 
                     <nav class="px-4 py-2 backdrop-blur-xl bg-base-100/70 sticky top-0 md:rounded-t-xl z-5">
                         <div class="flex justify-between items-center">
