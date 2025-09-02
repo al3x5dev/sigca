@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('Categorias', function (Blueprint $table) {
-            $table->id();
-            $table->string('tipo',255)->nullable(false);
+            $table->integer('id')->primary()->autoIncrement()->nullable(false);
+            $table->string('tipo', 255)->nullable(false);
         });
     }
 

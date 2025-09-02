@@ -14,15 +14,15 @@ return new class extends Migration
     {
         Schema::create('Solicitudes', function (Blueprint $table) {
             $table->id();
-            $table->string('numero',10)->nullable(false)->unique();
+            $table->string('numero', 10)->nullable(false)->unique();
             $table->integer('id_usuario')->nullable(false);
             $table->integer('id_comprador')->nullable(true);
-            $table->integer('categoria')->nullable(true);
+            $table->integer('categoria')->nullable(false); // Añadir la columna 'categoria'
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
 
+            $table->foreign('categoria')->references('id')->on('Categorias')->onDelete('no action');
             $table->foreign('id_usuario')->references('id')->on('Usuarios')->onDelete('no action');
             $table->foreign('id_comprador')->references('id')->on('Usuarios')->onDelete('no action');
-            $table->foreign('categoria')->references('id')->on('Categorias')->onDelete('no action');
         });
     }
 

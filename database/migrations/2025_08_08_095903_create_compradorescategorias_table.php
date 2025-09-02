@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('CompradoresCategorias', function (Blueprint $table) {
             $table->integer('id_comprador')->nullable(false);
-            $table->bigInteger('id_categoria')->nullable(false);
+            $table->integer('id_categoria')->nullable(false);
 
             $table->foreign('id_comprador')->references('id')->on('Usuarios')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('id_categoria')->references('id')->on('Categorias')->onDelete('cascade')->onUpdate('cascade');
