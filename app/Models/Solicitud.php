@@ -18,6 +18,7 @@ class Solicitud extends Model
         'numero',
         'id_usuario',
         'id_comprador',
+        'categoria',
         'fecha',
     ];
 
@@ -41,5 +42,10 @@ class Solicitud extends Model
     public function historico() : HasMany
     {
         return $this->hasMany(SolicitudHistorico::class, 'id_solicitud');
+    }
+
+    public function categoria() :BelongsTo
+    {
+        return $this->belongsTo(Categoria::class,'categoria');
     }
 }
