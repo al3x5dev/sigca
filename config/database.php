@@ -113,7 +113,7 @@ return [
         ],
 
         'une_2316a_int' => [
-            'driver' => 'sqlsrv',
+            'driver' => env('DB_CONNECTION_UNE','sqlsrv'),
             'url' => env('DB_URL_UNE'),
             'host' => env('DB_HOST_UNE', 'MEDIASERVER'),
             'port' => env('DB_PORT_UNE', '1433'),
