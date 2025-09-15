@@ -70,25 +70,74 @@ function menu() {
  */
 function searchProduct() {
     return {
+        almacen: '',
+        search: '',
         items: [],
         selectedProduct: null,
         products: [],
-        selectItem(item) {
-            this.selectedProduct = item;
-            this.$refs.autocomplete.value = item.Desc_Producto;
-            this.items = [];
+        errors: false,
+        errorMessage: '',
+        amountErr: '',
+        error: function (show, message) {
+            this.errors = show;
+            this.errorMessage = message;
+            setTimeout(() => {
+                this.errors = false;
+            }, 3000);
         },
-        hasItems() {
-            return this.items.length > 0;
+        checkAlmacen: function () { //verificar si selecciono el almacen
+            if (this.almacen == '') {
+                this.$refs.selectField.focus();
+                this.$refs.selectField.classList.add('select-error');
+                this.error(true, 'Debe seleccionar un almacén antes de realizar la búsqueda');
+            }
         },
-        getData(response) {
+        selection: function () {
+            this.$refs.selectField.classList.remove('select-error');
+        },
+        setUrl: function (url) { //establecer url de api
+            this.url = url;
+            if (this.$refs.input.classList.contains('input-error')) {
+                this.$refs.input.classList.remove('input-error');
+            }
+        },
+        handlerInput:function(){
+            if (this.$refs.input.value.length > 3) {
+                this.fetchResults();
+            } else{
+                this.items=[]
+            }
+        },
+        fetchResults: async function () { //trae resultados de la api productos
             try {
-                this.items = JSON.parse(response);
+                const data = { almacen: this.almacen, query: this.search };
+                const token = document.querySelector('input[name=_token]').value;
+
+                const response = await fetch(this.url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Response: ${response.status} [${response.statusText}]`);
+                }
+
+                this.items = await response.json();
                 this.selectedProduct = null;
+
             } catch (error) {
                 console.error(error);
-                alert(error);
+                this.error(true, error);
             }
+        },
+        selectItem: function (i) { //Selecciona un elemento para el input
+            this.items = [];
+            this.selectedProduct = i;
+            this.$refs.input.value = i.Desc_Producto;
         },
         amount() {
             if (this.selectedProduct !== null) {
@@ -97,79 +146,101 @@ function searchProduct() {
                 return ''
             }
         },
-        checkInput() {
-            const input = this.$refs.autocomplete;
-            const nextEl = input.nextElementSibling;
+        inputCant: function () {
 
-            if (input.value && input.classList.contains('input-error')) {
-                input.classList.remove('input-error');
-                nextEl.classList.remove('text-error');
-            }
-            nextEl.innerText = '';
-        },
-        addProduct() {
-            const inputDesc = this.$refs.autocomplete;
-            const inputCant = this.$refs.cantidad;
-            if (inputDesc.value === "") {
-                inputDesc.classList.add('input-error');
-                const nextEl = inputDesc.nextElementSibling;
-                nextEl.classList.add('text-error');
-                nextEl.innerText = 'Asegúrate de introducir todos los parámetros requeridos para que podamos realizar una búsqueda precisa.';
+
+            if (Number(this.$refs.cantidad.value) > 0) {
+                this.$refs.cantidad.classList.remove('input-error');
+                this.amountErr = '';
                 return;
             }
+            this.$refs.cantidad.classList.add('input-error');
+            this.amountErr = 'Especifiqué una cantidad válida';
+        },
+        addProduct() {
+            const select = this.$refs.selectField;
+            const inputDesc = this.$refs.input;
+            const inputCant = this.$refs.cantidad;
 
-            if (inputCant.value === '' || inputCant.value === null || isNaN(inputCant.value) || inputCant.value <= 0) {
-                alert('Por favor, introduce para la cantidad un número válido mayor que 0.');
-                return 0;
-            }
-
-            if (this.selectedProduct == null) {
-                // Crear un nuevo producto
-                const newProduct = {
-                    Id_Producto: null,
-                    UM_Almacen: 'U',
-                    Desc_Producto: inputDesc.value,
-                    Cantidad: inputCant.value
-                };
-
-                this.products.push(newProduct);
-            } else {
-                delete this.selectedProduct.Existencia_Actual;
-                this.selectedProduct.Cantidad = inputCant.value;
+            if (inputCant.value > 0 && inputDesc.value != '' && this.almacen != '') {
+                if (this.selectedProduct !== null) {
+                    this.selectedProduct.Cantidad = this.$refs.cantidad.value;
+                } else {
+                    const data = {
+                        Id_Producto: 'ID_' + Date.now(),
+                        Desc_Producto: this.$refs.input.value,
+                        Existencia_Actual: 0,
+                        UM_Almacen: null,
+                        Id_Almacen: this.$refs.selectField.value,
+                        Cantidad: this.$refs.cantidad.value
+                    };
+                    this.selectedProduct = data;
+                }
                 this.products.push(this.selectedProduct);
+                toggleModal(addProduct);
+            } else {
+
+                if (inputCant.value === '' || inputCant.value <= 0) {
+                    inputCant.classList.add('input-error');
+                }
+
+                if (inputDesc.value === '') {
+                    inputDesc.classList.add('input-error');
+                }
+
+                if (this.almacen === '') {
+                    select.classList.add('select-error');
+                }
+                this.error(true, 'Debe de rellenar todos los campos requeridos antes de continuar.');
             }
-
-            inputDesc.value = '';
-            inputCant.value = '';
-
-            toggleModal(addProduct);
         },
         deleteProduct(i) {
             this.products.splice(i, 1);
-        },
-        sendData() {
-            let str = JSON.stringify(this.products);
-            return str;
         }
     }
 }
-
+/**
+ * Manejador de categoria seleccionada para crear solicitudes
+ */
+function selectHandler() {
+    return {
+        message: '',
+        value: '',
+        selection: function () {
+            this.message = '';
+            this.$refs.select.classList.remove('select-error');
+        },
+        sendValue: function (url) {
+            console.log(this.value === '');
+            if (this.value === '') {
+                this.$refs.select.focus();
+                this.$refs.select.classList.add('select-error');
+                this.$refs.select.nextElementSibling.classList.add('text-error');
+                this.message = 'Debe seleccionar una categoría para continuar';
+            } else {
+                window.location.href = `${url}/nueva?categoria=${this.value}`;
+            }
+        }
+    }
+}
 
 /**
  * Modal Add productos
  */
 function toggleModal(id) {
-    const body = document.body;
-    const main = document.getElementById('container-main');
+    if (typeof id === 'string') {
+        id = document.getElementById(id);
+    }
+    const aside = document.querySelector('aside');
     if (id.hasAttribute('open')) {
-        body.style.overflow = '';
-        main.style.position = '';
+        aside.removeAttribute('style');
         id.removeAttribute('open');
         return 0;
     }
-    body.style.overflow = 'hidden';
-    main.style.position = 'relative';
-    id.setAttribute('open', 'true');
+    aside.style = 'z-index:0;';
+    setTimeout(() => {
+        id.setAttribute('open', 'true');
+    }, 200);
 }
 
 
@@ -226,7 +297,7 @@ function changeState() {
                 .then(data => {
                     //message = 'Respuesta del servidor: ' + JSON.stringify(data);
                     console.log(data.message);
-                    
+
                 })
                 .catch(error => {
                     this.message = 'Error: ' + error;
