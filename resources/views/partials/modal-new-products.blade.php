@@ -1,5 +1,5 @@
 @php
-$categorias = \App\Models\Categoria::all('tipo');
+$categorias = \App\Models\Categoria::all();
 @endphp
 <dialog id="newProducts" class="fixed p-4 w-full h-full flex justify-center items-center backdrop-blur-xs">
     <div class="text-base-content card bg-base-100 shadow-2xl border border-base-300 w-lg transition-transform">
@@ -15,13 +15,17 @@ $categorias = \App\Models\Categoria::all('tipo');
             <div class="card-title mb-4">Nueva Solicitud</div>
 
             <fieldset class="fieldset">
-                <legend class="fieldset-legend">Categorías</legend>
-                <select class="select w-full mb-2" x-model="selectValue">
-                    <option disabled selected>Selecione un categoría</option>
+                <legend class="fieldset-legend">Seleccione una Categoría</legend>
+                <select id="selectCatgNueva" class="select w-full mb-2"
+                x-model="value"
+                x-ref="select"
+                @change="selection">
+                <option class="text-base-content/50">Seleccionar categoría</option>
                     @foreach ($categorias as $c)
-                        <option>{{$c['tipo']}}</option>
+                        <option value="{{$c->id}}">{{$c->tipo}}</option>
                     @endforeach
                 </select>
+                <span class="label" x-show="message !== ''" x-text="message"></span>
             </fieldset>
 
 
@@ -30,7 +34,7 @@ $categorias = \App\Models\Categoria::all('tipo');
                     <!-- if there is a button in form, it will close the modal -->
                     <button class="btn">Cerrar</button>
                 </form>
-                <button class="btn btn-primary" @click="sendValue('{{route('solicitud.home')}}',selectValue)">Crear</button>
+                <button class="btn btn-primary" @click="sendValue('{{route('solicitud.home')}}')">Crear</button>
             </div>
         </div>
 
