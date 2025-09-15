@@ -43,20 +43,30 @@ dialog[open="true"] .card {
 
 dialog ul {
     padding: .75em;
-    max-height: 130px;
+    max-height: 150px;
     width: calc(100% - 48px);
-    top: 190px;
+    top: 280px;
     z-index: 1;
     /*display: none;*/
 }
 
 /*pannel cards*/
-.pannel-card{
+.pannel-card {
     transition: all 150ms ease-in-out;
-     svg.anim{
-    transform: rotate(-45deg);
-    transition: all 220ms ease-in-out;
-}}
-.pannel-card:hover{ svg.anim{
-    transform: rotate(0deg);
-}}
+
+    svg.anim {
+        transform: rotate(-45deg);
+        transition: all 220ms ease-in-out;
+    }
+}
+
+.pannel-card:hover {
+    svg.anim {
+        transform: rotate(0deg);
+    }
+}
+
+#product-list {
+    border: 1px solid;
+    border-color: color-mix(in oklab, var(--color-base-content)20%, #0000);
+}
