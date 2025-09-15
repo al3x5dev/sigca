@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
@@ -9,87 +10,56 @@ use Illuminate\Support\Facades\DB;
 
 class SolicitudController extends Controller
 {
+    private const PARENT_PAGE = 'Mis Solicitudes';
+    private const URL = 'solicitud.home';
+
     /**
      * Home vista
      */
-    public function dashboard(Request $request)
+    public function index(Request $request)
     {
-
         $items = Solicitud::with(['productos', 'comprador'])
-            ->join('SolicitudesHistorico as sh', 'Solicitudes.id', '=', 'sh.id_solicitud')
-            ->join('Estados as e', 'sh.estado', '=', 'e.id')
-            ->join(DB::raw('(SELECT id_solicitud, MAX(estado) as max_estado FROM SolicitudesHistorico GROUP BY id_solicitud) as max_sh'), function ($join) {
-                $join->on('sh.id_solicitud', '=', 'max_sh.id_solicitud')
-                    ->on('sh.estado', '=', 'max_sh.max_estado');
-            })
+            ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
+            ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
+            ->join('Estados as e', 'e.id', '=', 'sh.estado')
             ->select(
                 'Solicitudes.*',
-                'sh.fecha',
+                'Solicitudes.id_comprador as comprador',
+                'c.tipo as categoria',
                 'e.id as estado_id',
-                'e.estado',
-                'sh.estado as historico_estado'
+                'e.estado as estado',
+                'sh.fecha'
             )
-            ->where('Solicitudes.id_usuario', session('logged.id'))
-            ->get();
-
-        $pendiente = 0;
-        $completado = 0;
-        $proceso = 0;
-        $eliminado = 0;
-
-        foreach ($items as $item) {
-            if ($item->id_usuario == session('logged.id')) {
-                switch ($item->estado_id) {
-                    case 1:
-                        $pendiente++;
-                        break;
-                    case 3:
-                        $completado++;
-                        break;
-                    case 2:
-                        $proceso++;
-                        break;
-                    case 4:
-                        $eliminado++;
-                        break;
-                }
-            }
-        }
+            ->orderBy('e.id', 'asc')
+            ->orderBy('sh.fecha', 'desc')
+            ->paginate(25);
 
         $data = [
             'page' => [
-                'title' => 'dashboard',
-                'name' => 'Panel de Control'
-            ],
-            'estado' => [
-                'pendiente' => $pendiente,
-                'completado' => $completado,
-                'proceso' => $proceso,
-                'eliminado' => $eliminado,
+                'title' => 'solicitud',
+                'name' => self::PARENT_PAGE
             ],
             'items' => $items
         ];
-        return view('dashboard.user.home', $data);
-    }
 
-    public function index(Request $request)
-    {
-        $data = [
-            'page' => [
-                'title' => 'userSolicitudes',
-                'name' => 'Solicitudes'
-            ]
-        ];
-        return view('dashboard.user.solicitudes', $data);
+        return view('dashboard.solicitud.home', $data);
     }
 
     /**
      * Vista nueva solicitud
      */
-    public function add()
+    public function nueva(Request $request)
     {
 
         $last = Solicitud::orderBy('fecha', 'desc')->pluck('numero')->first();
+        $almacenes = DB::connection('une_2316a_int')->select('SELECT * FROM vw_SIGCA_Almacenes');
+        $categoria = $request->query('categoria', false);
+
+        $categoriasId = Categoria::all('id')->pluck('id')->toArray();
+
+        if (!$categoria || !in_array($categoria, $categoriasId)) {
+            abort(404);
+        }
 
         // Calcula # solicitud
         if (!empty($last)) {
@@ -102,17 +72,18 @@ class SolicitudController extends Controller
         }
 
 
-
         $data = [
             'page' => [
-                'title' => 'newSolicitud',
+                'parent' => [self::PARENT_PAGE, route(self::URL)],
                 'name' => 'Nueva Solicitud'
             ],
             'solicitud' => [
                 'numero' => $sum . '/' . date('Y')
             ],
+            'categoria' => $categoria,
+            'almacenes' => $almacenes
         ];
-        return view('dashboard.user.add', $data);
+        return view('dashboard.solicitud.nueva', $data);
     }
 
     /**
@@ -136,7 +107,8 @@ class SolicitudController extends Controller
             $newSolicitud = new Solicitud();
             $newSolicitud->fill([
                 'numero' => $request->post('numero'),
-                'id_usuario' => $request->post('usuario')
+                'id_usuario' => $request->post('usuario'),
+                'categoria' => $request->post('categoria')
             ]);
             if ($newSolicitud->save()) {
                 $lastSolicitud = Solicitud::where('numero', $request->post('numero'))->first();
@@ -166,8 +138,8 @@ class SolicitudController extends Controller
                 <span >Todos los productos se han agregado correctamente a la base de datos.</span>
                 <script>
                     setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                        window.location.assign('/solicitud');
+                    }, 1000);
                 </script>
             </div>
             HTML;
