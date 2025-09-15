@@ -35,8 +35,28 @@ Route::post('/logout', [AuthController::class, 'logout'])
 // Rutas protegidas que requieren autenticación
 Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
     Route::get('/dashboard', [UsuarioController::class, 'index'])->name('dashboard');
-    Route::get('/solicitud', [SolicitudController::class, 'add'])->name('solicitud');
-    Route::post('/add-solicitud', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
+
+    /**
+     * SUB-RUTAS
+     */
+    //Solicitud
+    Route::prefix('solicitud')->name('solicitud.')->group(function() {
+        Route::get('/', [SolicitudController::class, 'index'])->name('home');
+        Route::get('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
+        Route::post('/save', [SolicitudController::class, 'addSolicitud'])->name('save');
+    });
+
+    //gestion
+    Route::prefix('gestion')->name('gestion.')->group(function() {
+        Route::get('/', [SolicitudController::class, 'index'])->name('home');
+        //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
+    });
+
+    //Subrutas
+    Route::prefix('admin')->name('admin.')->group(function() {
+        Route::get('/', [SolicitudController::class, 'index'])->name('home');
+        //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
+    });
 });
 
 // API Routes (también protegidas)
@@ -44,7 +64,7 @@ Route::prefix('api')
     ->name('api.')
     ->middleware(['ldap.auth', 'no.cache'])
     ->group(function () {
-        Route::get('/search-products', [ProductoController::class, 'search'])->name('producto');
+        Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
         Route::delete('/solicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
         Route::put('/history/state/{id}', [HistoricoController::class, 'state'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
