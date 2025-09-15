@@ -10,13 +10,15 @@ class ProductoController extends Controller
 {
     public function search(Request $request): JsonResponse
     {
-        $query = $request->input('p');
+        $almacen = $request->post('almacen');
+        $query = $request->post('query');
 
         if (!empty($query)) {
             // Realiza la consulta a la base de datos
             $products = DB::connection('une_2316a_int')
                 ->table('vw_SIGCA_ProductosExistencia')
-                ->select('Id_Producto', 'Desc_Producto', 'Existencia_Actual','UM_Almacen')
+                ->select('Id_Producto', 'Desc_Producto', 'Existencia_Actual','UM_Almacen','Id_Almacen')
+                ->where('Id_Almacen',$almacen)
                 ->where('Desc_Producto', 'LIKE', "%{$query}%")
                 /*->take(15)*/
                 ->get();
