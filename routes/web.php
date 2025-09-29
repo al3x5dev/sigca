@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\HistoricoController;
+use App\Http\Controllers\CompradorController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SolicitudController;
@@ -48,13 +49,14 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
 
     //gestion
     Route::prefix('gestion')->name('gestion.')->group(function() {
-        Route::get('/', [SolicitudController::class, 'index'])->name('home');
+        Route::get('/', [CompradorController::class,'index'])->name('home');
+        Route::get('/solicitud/{anno}/{numb}', [CompradorController::class,'estado'])->name('solicitud');
         //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
     });
 
-    //Subrutas
+    //administracion
     Route::prefix('admin')->name('admin.')->group(function() {
-        Route::get('/', [SolicitudController::class, 'index'])->name('home');
+        Route::get('/', [AdminController::class, 'index'])->name('home');
         //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
     });
 });
@@ -66,6 +68,6 @@ Route::prefix('api')
     ->group(function () {
         Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
         Route::delete('/solicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
-        Route::put('/history/state/{id}', [HistoricoController::class, 'state'])->name('changeStateSolicitud');
+        Route::put('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
     });
