@@ -101,11 +101,11 @@ function searchProduct() {
                 this.$refs.input.classList.remove('input-error');
             }
         },
-        handlerInput:function(){
-            if (this.$refs.input.value.length > 3) {
+        handlerInput: function () {
+            if (this.$refs.input.value.length > 2) {
                 this.fetchResults();
-            } else{
-                this.items=[]
+            } else {
+                this.items = []
             }
         },
         fetchResults: async function () { //trae resultados de la api productos
@@ -243,6 +243,64 @@ function toggleModal(id) {
     }, 200);
 }
 
+/**
+ * Gestionador de solicitudes
+ * 
+ * ESTE ES EL ENCARGADO DE CAMBIAR EL ESTADO DE LA SOLICITUD
+ */
+function managerRequest() {
+    return {
+        state: '',
+        retorn: false,
+        btnAction: '',
+        products: [],
+        start(state, url, token) {
+            if (state === 'Pendiente') {
+                this.btnAction = 'Aprobar';
+            } else if (state === 'En Proceso') {
+                this.btnAction = 'Actualizar';
+            } else {
+                this.btnAction = 'Volver';
+                this.retorn = true;
+            }
+            this.url = url;
+            this.state = state;
+            this.token = token;
+        },
+        editable(e) {
+            //Hacer el elemento autoseleccionable
+            let range = document.createRange();
+            range.selectNodeContents(e.target);
+            let sel = window.getSelection();
+            sel.addRange(range);
+
+
+            e.target.setAttribute('contenteditable', true);
+
+            // Añadir evento input para filtrar solo números
+            e.target.addEventListener('input', (event) => {
+                let value = e.target.textContent;
+                if (isNaN(value)) {
+                    e.target.classList.add('text-error');
+                } else {
+                    if (e.target.classList.contains('text-error')) {
+                        e.target.classList.remove('text-error');
+                    }
+
+
+                    let productIndex = this.products.findIndex(p => p.id === e.target.id);
+                    if (productIndex === -1) {
+                        // Si no existe, añadir el producto
+                        this.products.push({ id: e.target.id, cantidad: value });
+                    } else {
+                        // Si existe, actualizar la cantidad
+                        this.products[productIndex].cantidad = value;
+                    }
+                }
+            });
+        }
+    }
+}
 
 /**
  * Modal Comprador cambiar estado solicitud
