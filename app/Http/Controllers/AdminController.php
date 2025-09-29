@@ -10,10 +10,10 @@ class AdminController extends Controller
     {
         $data=[
             'page' =>[
-                'title'=> 'dashboard',
-                'name'=> 'Dashboard'
+                'title'=> 'admin',
+                'name'=> 'Panel de Administración'
             ]
         ];
-        return view('dashboard.admin.panel', $data);
+        return view('dashboard.admin.home', $data);
     }
 }

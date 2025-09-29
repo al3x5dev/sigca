@@ -18,7 +18,7 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
-        $items = Solicitud::with(['productos', 'comprador'])
+        /*$items = Solicitud::with(['productos', 'comprador'])
             ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
             ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
             ->join('Estados as e', 'e.id', '=', 'sh.estado')
@@ -32,7 +32,29 @@ class SolicitudController extends Controller
             )
             ->orderBy('e.id', 'asc')
             ->orderBy('sh.fecha', 'desc')
-            ->paginate(25);
+            ->paginate(10);*/
+
+        $items = Solicitud::with(['productos', 'comprador'])
+            ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
+            ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
+            ->join('Estados as e', 'e.id', '=', 'sh.estado')
+            ->select([
+                'Solicitudes.*',
+                'Solicitudes.id_comprador as comprador',
+                'c.tipo as categoria',
+                'e.id as estado_id',
+                'e.estado as estado',
+                'sh.fecha'
+            ])
+            ->whereIn('e.id', function ($query) {
+                $query->select('estado')
+                    ->from('SolicitudesHistorico')
+                    ->whereColumn('SolicitudesHistorico.id_solicitud', 'Solicitudes.id')
+                    ->orderBy('fecha', 'desc')
+                    ->limit(1);
+            })
+            ->orderByRaw('e.id ASC, sh.fecha DESC')
+            ->paginate(10);
 
         $data = [
             'page' => [

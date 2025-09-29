@@ -75,7 +75,7 @@
     @endif
 
     @if ($isComprador)
-      <a href="" class="card bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-all:200ms pannel-card w-72 text-amber-900 rounded-3xl">
+      <a href="{{route('gestion.home')}}" class="card bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-all:200ms pannel-card w-72 text-amber-900 rounded-3xl">
           <div class="card-body">
             <div class="flex items-center justify-between">
 
@@ -94,20 +94,20 @@
     @endif
 
     @if ($isSupervisor)
-      <a href="" class="card bg-pink-50 border border-pink-200 hover:bg-pink-100 transition-all:200ms pannel-card w-72 text-pink-900 rounded-3xl">
+      <a href="{{route('admin.home')}}" class="card bg-pink-50 border border-pink-200 hover:bg-pink-100 transition-all:200ms pannel-card w-72 text-pink-900 rounded-3xl">
           <div class="card-body">
             <div class="flex items-center justify-between">
 
               <div class="p-2 rounded-full bg-slate-50 border-pink-200 border">
-                <svg xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" class="size-8 text-pink-500"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="size-8 text-pink-500"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 16.5l-5 -3l5 -3l5 3v5.5l-5 3z" /><path d="M2 13.5v5.5l5 3" /><path d="M7 16.545l5 -3.03" /><path d="M17 16.5l-5 -3l5 -3l5 3v5.5l-5 3z" /><path d="M12 19l5 3" /><path d="M17 16.5l5 -3" /><path d="M12 13.5v-5.5l-5 -3l5 -3l5 3v5.5" /><path d="M7 5.03v5.455" /><path d="M12 8l5 -3" /></svg>
               </div>
 
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" class="anim h-5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>
 
             </div>
 
-            <h4 class="text-lg font-bold">Gestión de Usuarios</h4>
-            <p>Administra los permisos y accesos de todos los usuarios del sistema.</p>
+            <h4 class="text-lg font-bold">Administración</h4>
+            <p>Optimiza flujos de trabajo y procesos de compra.</p>
           </div>
       </a>
 

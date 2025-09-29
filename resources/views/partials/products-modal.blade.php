@@ -1,7 +1,7 @@
 <dialog id="modal1" class="fixed p-4 w-full h-full flex justify-center items-center backdrop-blur-xs">
-    <div class="text-base-content card bg-base-100 shadow-2xl border border-base-300 w-lg transition-transform">
+    <div class="text-base-content card max-h-96 bg-base-100 shadow-2xl border border-base-300 w-full md:w-lg transition-transform">
 
-        <div class="card-body">
+        <div class="card-body overflow-x-auto">
             <div class="block">
                 <svg @click="closeModal" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="float-end cursor-pointer">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -17,7 +17,7 @@
                         <tr>
                             <th>Código</th>
                             <th>Descripción</th>
-                            <th>Cantidad Solc.</th>
+                            <th>Solcitud</th>
                             <!--<th>Cantidad Recibida</th>-->
                         </tr>
                     </thead>

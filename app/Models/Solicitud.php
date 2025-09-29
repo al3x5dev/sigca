@@ -44,6 +44,12 @@ class Solicitud extends Model
         return $this->hasMany(SolicitudHistorico::class, 'id_solicitud');
     }
 
+    public function ultimoEstado()
+    {
+        return $this->hasOne(SolicitudHistorico::class, 'id_solicitud')
+        ->latestOfMany('fecha');
+    }
+
     public function categoria() :BelongsTo
     {
         return $this->belongsTo(Categoria::class,'categoria');
