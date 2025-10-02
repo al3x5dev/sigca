@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -10,22 +10,28 @@
 
     <!-- ALPINE.JS -->
     <!--<script src="//unpkg.com/alpinejs" defer></script>-->
-    <script src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js" defer></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!--<script src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js" defer></script>-->
 
     <!-- TAILWIND.CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!--<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>-->
 
     <!-- DAISY-UI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <!--<link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />-->
 </head>
-
+<style>
+    #img{
+        background-color: gray;
+        background-image: url("{{asset('assets/img/bg-login.webp')}}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+</style>
 <body class="h-dvh">
     <main class="h-full flex flex-row">
-        <div class="xl:basis-8/12 lg:basis-7/12
-        hidden lg:block
-        bg-cover bg-center
-        bg-[url({{asset('assets/img/bg-login.webp')}})]" style="background-color: gray;"></div>
+        <div id="img" class="xl:basis-8/12 lg:basis-7/12 hidden lg:block"></div>
         <div class="xl:basis-4/12 lg:basis-5/12 basis-full flex justify-center items-center p-4">
 
             @if ($errors->any())

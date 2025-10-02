@@ -12,18 +12,20 @@
 
     <!-- ALPINE.JS -->
     <!--<script src="//unpkg.com/alpinejs" defer></script>-->
-    <script src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js" defer></script>
+    <!--<script src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js" defer></script>-->
 
     <!-- HTMX -->
     <script src="{{asset('assets/js/htmx.min.js')}}" defer></script>
 
 
     <!-- TAILWIND.CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!--<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>-->
 
     <!-- DAISY-UI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <!--<link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />-->
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!--Custom-->
     <link rel="stylesheet" href="{{asset('assets/css/main.css')}}">
@@ -128,7 +130,7 @@
                                 menu
                                 z-1 w-52 p-2
                                 shadow-xl border border-white/5">
-                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'light' ? 'dim' : 'light'}}`)">
+                                        <li><a onclick="profile(`{{url('/')}}/api/profile/?m={{Auth::user()->perfil->theme == 'light' ? 'dark' : 'light'}}`)">
                                                 Activar modo
                                                 @if (Auth::user()->perfil->theme=='light')
                                                 oscuro
