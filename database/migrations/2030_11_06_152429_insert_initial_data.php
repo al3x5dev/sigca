@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         // Llamar al .env
-        (Dotenv::createImmutable(dirname(__DIR__,2)))->load();
+        (Dotenv::createImmutable(dirname(__DIR__, 2)))->load();
 
         // Insertar roles
         DB::statement("INSERT INTO Roles (rol) VALUES
@@ -57,7 +57,7 @@ return new class extends Migration
         $usuarios = [
             [
                 78892 => 'alejandrom',
-                'roles' => [1, 2]
+                'roles' => [1, 2, 3]
             ],
             [
                 77212 => 'pepe',

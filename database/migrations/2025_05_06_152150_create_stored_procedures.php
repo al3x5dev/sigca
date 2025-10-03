@@ -70,7 +70,7 @@ return new class extends Migration
                 UPDATE ps
                 SET ps.cant_recibida = rpc.Cantidad_Recibida
                 FROM ProductosSolicitud ps 
-                INNER JOIN UNE_2316A_INT.dbo.vw_SIGCA_RecepcionProductosContabilizado rpc ON ps.id_producto = rpc.Id_Producto
+                INNER JOIN MEDIASERVER.UNE_2316A_INT.dbo.vw_SIGCA_RecepcionProductosContabilizado rpc ON ps.id_producto = rpc.Id_Producto
                 INNER JOIN Sync sy ON rpc.Fecha_ent > sy.fecha;
             END;
         ");

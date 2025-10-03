@@ -18,7 +18,7 @@ return new class extends Migration
             pe.Existencia_Actual,
             pe.Id_Almacen,
             pe.Fecha_Entrada
-        FROM UNE_2316A_INT.dbo.vw_SIGCA_ProductosExistencia AS pe
+        FROM MEDIASERVER.UNE_2316A_INT.dbo.vw_SIGCA_ProductosExistencia AS pe
         INNER JOIN dbo.Sync AS s ON pe.Fecha_Entrada > DATEADD(DAY, - 1, s.fecha)");
     }
 

@@ -23,7 +23,7 @@
 <style>
     #img{
         background-color: gray;
-        background-image: url("{{asset('assets/img/bg-login.webp')}}");
+        background-image: url("{{asset('assets/img/bg-login.png')}}");
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
