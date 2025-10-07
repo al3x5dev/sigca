@@ -32,7 +32,7 @@
 
     </div>
     <form id="updSolicitud" class="card shadow-md border border-base-300"
-        hx-put="{{route('api.changeStateSolicitud',[$id])}}"
+        hx-post="{{route('api.changeStateSolicitud',[$id])}}"
         hx-trigger="submit"
         hx-target="#toast">
         @csrf

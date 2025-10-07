@@ -67,7 +67,7 @@ Route::prefix('api')
     ->middleware(['ldap.auth', 'no.cache'])
     ->group(function () {
         Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
-        Route::delete('/solicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
-        Route::put('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
+        Route::post('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
+        Route::post('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
     });

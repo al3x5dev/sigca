@@ -63,7 +63,7 @@
                             </div>
 
                             <form
-                                hx-delete="{{route('api.deleteSolicitud',$item->id )}}"
+                                hx-post="{{route('api.deleteSolicitud',$item->id )}}"
                                 hx-trigger="click"
                                 hx-target="#solicitud-{{ $item->id }}"
                                 hx-target="closest tr" hx-swap="outerHTML swap:1s">
