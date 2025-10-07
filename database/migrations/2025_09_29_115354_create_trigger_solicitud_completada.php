@@ -30,12 +30,12 @@ return new class extends Migration
 
                 -- Contar el número total de productos para la solicitud
                 SELECT @producto_count = COUNT(*)
-                FROM SIGCA_DB.dbo.ProductosSolicitud
+                FROM ProductosSolicitud
                 WHERE id_solicitud = @id_solicitud;
 
                 -- Contar el número de productos donde la cantidad solicitada es igual a la cantidad recibida
                 SELECT @producto_match_count = COUNT(*)
-                FROM SIGCA_DB.dbo.ProductosSolicitud
+                FROM ProductosSolicitud
                 WHERE id_solicitud = @id_solicitud AND cant_solicitada = cant_recibida;
 
                 -- Verificar si todos los productos tienen la cantidad solicitada igual a la cantidad recibida
@@ -43,7 +43,7 @@ return new class extends Migration
                     BEGIN
 
                     -- Insertar en la tabla SolicitudesCompletas
-                    INSERT INTO SIGCA_DB.dbo.SolicitudesHistorico (id_solicitud,estado)
+                    INSERT INTO SolicitudesHistorico (id_solicitud,estado)
                     VALUES (@id_solicitud,3);
                 END
             END;
