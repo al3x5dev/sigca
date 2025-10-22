@@ -112,12 +112,12 @@
                         x-ref="input"
                         @focus="checkAlmacen"
                         @click="setUrl('{{route('api.producto')}}')"
-                        @input.debounce.500ms="handlerInput">
+                        @input.debounce="handlerInput">
                     <p class="label" x-text="amount" style="text-wrap: auto;"></p>
                 </fieldset>
 
                 <ul id="product-list" class="list bg-base-100 rounded-box shadow-2xl/30 absolute left-6 overflow-x-auto" x-show="items.length>0"
-                    x-transition.duration.500ms>
+                    x-transition.duration>
 
                     <template x-for="(item, index) in items" :key="index">
                         <li class="list-row cursor-pointer hover:bg-base-200" x-text="item.Desc_Producto" @click="selectItem(item)">
