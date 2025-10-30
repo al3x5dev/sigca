@@ -6,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SolicitudController extends Controller
@@ -52,7 +53,7 @@ class SolicitudController extends Controller
                     ->whereColumn('SolicitudesHistorico.id_solicitud', 'Solicitudes.id')
                     ->orderBy('fecha', 'desc')
                     ->limit(1);
-            })
+            })->where('Solicitudes.id_usuario',Auth::user()->id)
             ->orderByRaw('e.id ASC, sh.fecha DESC')
             ->paginate(10);
 
