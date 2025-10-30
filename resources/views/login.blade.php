@@ -21,14 +21,25 @@
     <!--<link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />-->
 </head>
 <style>
-    #img{
+    #img {
         background-color: gray;
         background-image: url("{{asset('assets/img/bg-login.png')}}");
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
     }
+
+    @media (width >=96rem) {
+        #form {padding: 4em;}
+    }
+    @media (width >=80em) and (width < 95.9em) {
+        #form {padding: 2.15em;}
+    }
+    @media (width >=64rem) and (width < 79.9em) {
+        #form {padding: 1.375em;}
+    }
 </style>
+
 <body class="h-dvh">
     <main class="h-full flex flex-row">
         <div id="img" class="xl:basis-8/12 lg:basis-7/12 hidden lg:block"></div>
@@ -50,7 +61,7 @@
             @endif
 
 
-            <form action="{{route('signin')}}" method="post">
+            <form action="{{route('signin')}}" method="post" id="form">
                 <div class="mb-4">
                     <!-- Logo -->
                     <div class="flex items-center mb-3 justify-center lg:justify-start">
@@ -61,7 +72,7 @@
                     </div>
                     <!-- /Logo -->
 
-                    <h1 class="text-xl text-center lg:text-start">Ingresa tus datos de acceso para continuar</h1>
+                    <h1 class="text-xl text-center lg:text-start">Sistema Integrado de Gestión de Compras y Almacén</h1>
                 </div>
                 @csrf
 
