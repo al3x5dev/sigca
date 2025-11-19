@@ -57,6 +57,7 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
     //administracion
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::get('/', [AdminController::class, 'index'])->name('home');
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
         //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
     });
 });
