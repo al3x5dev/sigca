@@ -39,6 +39,12 @@ return new class extends Migration
         ('Materiales de oficina'),
         ('Mtto. y Averías')");
 
+        //Insertar Prioridades
+        DB::statement("INSERT INTO Prioridades (prioridad) VALUES
+        ('Alta'),
+        ('Media'),
+        ('Baja')");
+
 
         // Insertar en Sync con valor por defecto
         DB::statement("INSERT INTO Sync (fecha) VALUES (DEFAULT);");

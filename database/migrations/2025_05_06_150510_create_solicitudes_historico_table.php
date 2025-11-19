@@ -16,10 +16,12 @@ return new class extends Migration
             $table->bigInteger('id_solicitud')->nullable(false);
             $table->integer('estado')->nullable(false);
             $table->dateTime('fecha')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->integer('id_usuario')->nullable(false);
+            $table->foreign('id_usuario')->references('id')->on('Usuarios')->onDelete('no action');
             $table->foreign('id_solicitud')->references('id')->on('Solicitudes')->onDelete('cascade');
             $table->foreign('estado')->references('id')->on('Estados')->onDelete('no action');
 
-            $table->primary(['id_solicitud','estado']);
+            $table->primary(['id_solicitud', 'estado']);
         });
     }
 
