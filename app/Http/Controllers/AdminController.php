@@ -23,15 +23,14 @@ class AdminController extends Controller
 
     public function users()
     {
+
         $data = [
             'page' => [
                 'parent' => [self::PARENT_PAGE, route(self::URL)],
                 'name' => 'Gestión de Usuarios'
             ],
-            'usuarios' => Usuario::paginate(10)
+            'usuarios' => Usuario::all()
         ];
-
-        //dd($this->getData(request()));
 
         return view('dashboard.admin.users', $data);
     }
