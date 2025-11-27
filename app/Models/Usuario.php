@@ -27,6 +27,11 @@ class Usuario extends Authenticatable
         'activo'
     ];
 
+    protected $casts = [
+        'ultm_acc' => 'datetime',
+        'password' => 'hashed',
+    ];
+
     protected $hidden = ['password'];
 
     // Deshabilitar timestamps si no los necesitas
