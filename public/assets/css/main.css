@@ -70,3 +70,28 @@ dialog ul {
     border: 1px solid;
     border-color: color-mix(in oklab, var(--color-base-content)20%, #0000);
 }
+
+/*datatable*/
+.datatable-container{
+    height: auto !important;
+}
+.datatable-top{
+    display: grid;
+    gap: 1em;
+}
+.datatable-search{
+    display: flex;
+    justify-content: right;
+}
+.sp{
+    max-width: 65px;
+    margin-right: 8px;
+}
+
+/*MEDIAQUERY*/
+@media (width >= 48rem) {
+    .datatable-top{
+    gap: 2em;
+    grid-template-columns: repeat(2,1fr);
+}
+}
