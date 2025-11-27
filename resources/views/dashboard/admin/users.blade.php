@@ -21,14 +21,44 @@
         </a>
     </div>
 
-    
 
 
 
 
+    <div class="max-w-dvw w-full mr-[-2em] overflow-x-auto">
+        <div class="overflow-x-auto">
+            <div x-data="dataTable">
 
+                <table class="table" id="my-table">
+                    <!-- head -->
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Cargo</th>
+                            <th>Usuario</th>
+                            <th>Acceso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($usuarios as $usuario)
+                        <tr class="hover:bg-base-200" id="user_{{$usuario->id}}">
+                            <td>{{$usuario->nombre}}</td>
 
+                            <td>{{$usuario->cargo}}</td>
+                            <td>{{$usuario->usuario}}</td>
+                            <td>
+                                @if (!empty($usuario->ultm_acc))
+                                {{$usuario->ultm_acc->diffForHumans()}}
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
 
+            </div>
+        </div>
+    </div>
 
 </section>
 
