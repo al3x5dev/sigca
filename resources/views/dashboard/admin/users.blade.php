@@ -27,9 +27,9 @@
 
     <div class="max-w-dvw w-full mr-[-2em] overflow-x-auto">
         <div class="overflow-x-auto">
-            <div x-data="dataTable">
+            <div x-data="datatable">
 
-                <table class="table" id="my-table">
+                <table id="my-table">
                     <!-- head -->
                     <thead>
                         <tr>
@@ -41,7 +41,7 @@
                     </thead>
                     <tbody>
                         @foreach ($usuarios as $usuario)
-                        <tr class="hover:bg-base-200" id="user_{{$usuario->id}}">
+                        <tr class="hover:bg-base-200 cursor-pointer" id="user_{{$usuario->id}}">
                             <td>{{$usuario->nombre}}</td>
 
                             <td>{{$usuario->cargo}}</td>
