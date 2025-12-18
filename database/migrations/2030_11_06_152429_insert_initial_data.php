@@ -40,7 +40,7 @@ return new class extends Migration
         ('Mtto. y Averías')");
 
         //Insertar Prioridades
-        DB::statement("INSERT INTO Prioridades (prioridad) VALUES
+        DB::statement("INSERT INTO Prioridades (tipo) VALUES
         ('Alta'),
         ('Media'),
         ('Baja')");

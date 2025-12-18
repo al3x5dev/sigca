@@ -19,8 +19,8 @@ return new class extends Migration
             AFTER INSERT
             AS
             BEGIN
-                INSERT INTO SolicitudesHistorico (id_solicitud, estado)
-                SELECT INSERTED.id, 1
+                INSERT INTO SolicitudesHistorico (id_solicitud, estado, id_usuario)
+                SELECT INSERTED.id, 1,INSERTED.id_usuario
                 FROM INSERTED;
             END;
         ');

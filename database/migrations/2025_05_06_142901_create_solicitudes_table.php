@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('Prioridades', function (Blueprint $table) {
             $table->id();
-            $table->string('prioridad')->nullable(false)->unique();
+            $table->string('tipo')->nullable(false)->unique();
         });
 
         Schema::create('Solicitudes', function (Blueprint $table) {
@@ -24,7 +24,9 @@ return new class extends Migration
             $table->integer('id_comprador')->nullable(true);
             $table->integer('categoria')->nullable(false); // Añadir la columna 'categoria'
             $table->foreignId('prioridad')->references('id')->on('Prioridades')->onDelete('cascade');
-            $table->text('notas');
+            $table->text('detalles');
+            $table->string('area')->nullable(false);
+            $table->string('centro_costo')->nullable(false);
             $table->dateTime('fecha')->useCurrent();
 
             $table->foreign('categoria')->references('id')->on('Categorias')->onDelete('no action');

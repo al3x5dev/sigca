@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('descripcion',255)->nullable(false);
             $table->integer('cant_solicitada')->nullable(false);
             $table->integer('cant_recibida')->default(0);
-            $table->boolean('nuevo')->default(false);
+            //$table->boolean('nuevo')->default(false);
             
             $table->foreign('id_solicitud')->references('id')->on('Solicitudes')->onDelete('cascade');
         });
