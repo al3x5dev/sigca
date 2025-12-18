@@ -78,4 +78,9 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Solicitud::class, 'id_comprador');
     }
+
+    public function solicitudHistorico(): HasMany
+    {
+        return $this->hasMany(SolicitudHistorico::class, 'id_usuario');
+    }
 }

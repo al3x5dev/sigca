@@ -11,11 +11,7 @@ class Categoria extends Model
 {
     use HasFactory;
     protected $table = 'Categorias';
-    protected $primaryKey = [
-        'id',
-        'tipo'
-    ];
-    public $incrementing = false;
+    protected $fillable = ['tipo'];
 
     public function usuario(): BelongsToMany
     {

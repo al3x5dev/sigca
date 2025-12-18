@@ -11,7 +11,7 @@ class Rol extends Model
     use HasFactory;
 
     protected $table = 'Roles';
-    protected $fillable = ['id', 'rol'];
+    protected $fillable = ['rol'];
     public $timestamps = false;
 
     public function usuario() : BelongsToMany

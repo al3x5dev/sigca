@@ -15,6 +15,7 @@ class SolicitudHistorico extends Model
     protected $fillable = [
         'id_solicitud',
         'estado',
+        'id_usuario',
         'fecha',
     ];
 
@@ -35,5 +36,10 @@ class SolicitudHistorico extends Model
     public function solicitud() : BelongsTo
     {
         return $this->belongsTo(Solicitud::class, 'id_solicitud');
+    }
+
+    public function usuario(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'id_usuario');
     }
 }

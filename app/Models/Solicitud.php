@@ -14,11 +14,14 @@ class Solicitud extends Model
     protected $table = 'Solicitudes';
 
     protected $fillable = [
-        'id',
         'numero',
         'id_usuario',
         'id_comprador',
         'categoria',
+        'area',
+        'ccosto',
+        'prioridad',
+        'detalles',
         'fecha',
     ];
 
@@ -39,7 +42,7 @@ class Solicitud extends Model
         return $this->hasMany(Producto::class, 'id_solicitud');
     }
 
-    public function historico() : HasMany
+    public function historico(): HasMany
     {
         return $this->hasMany(SolicitudHistorico::class, 'id_solicitud');
     }
@@ -47,11 +50,11 @@ class Solicitud extends Model
     public function ultimoEstado()
     {
         return $this->hasOne(SolicitudHistorico::class, 'id_solicitud')
-        ->latestOfMany('fecha');
+            ->latestOfMany('fecha');
     }
 
-    public function categoria() :BelongsTo
+    public function categoria(): BelongsTo
     {
-        return $this->belongsTo(Categoria::class,'categoria');
+        return $this->belongsTo(Categoria::class, 'categoria');
     }
 }
