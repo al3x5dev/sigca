@@ -43,7 +43,9 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
     //Solicitud
     Route::prefix('solicitud')->name('solicitud.')->group(function() {
         Route::get('/', [SolicitudController::class, 'index'])->name('home');
-        Route::get('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
+        //Route::get('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
+        Route::get('/productos', [SolicitudController::class, 'productos'])->name('productos');
+        Route::post('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
         Route::post('/save', [SolicitudController::class, 'addSolicitud'])->name('save');
     });
 
