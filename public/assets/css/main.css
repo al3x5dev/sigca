@@ -19,6 +19,7 @@
     background: #555;
 }
 
+/*
 dialog {
     visibility: hidden;
     background-color: #fff1;
@@ -47,8 +48,8 @@ dialog ul {
     width: calc(100% - 48px);
     top: 280px;
     z-index: 1;
-    /*display: none;*/
-}
+    /*display: none;*//*
+}*/
 
 /*pannel cards*/
 .pannel-card {

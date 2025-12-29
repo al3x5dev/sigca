@@ -10,3 +10,29 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+dialog.modal {
+    backdrop-filter: blur(3px);
+}
+/*OUTLINE ERROR EN SELECTS*/
+select.custom-error {
+    outline: 2px solid var(--color-error);
+    border-color: var(--color-error);
+    outline-offset: 2px;
+    isolation: isolate;
+    z-index: 1;
+}
+
+span.custom-error{
+    outline: 2px solid var(--color-error);
+    border-radius: 1px;
+}
+
+/*MODAL LOADING*/
+.htmx-indicator {
+    display: none;
+}
+
+.htmx-request.htmx-indicator {
+    display: flex;
+}

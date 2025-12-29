@@ -65,7 +65,7 @@ function menu() {
 }
 
 /**
- * SEARCH PRODUCT
+ * SEARCH PRODUCT OLD
  * @returns 
  */
 function searchProduct() {
@@ -211,14 +211,13 @@ function selectHandler() {
             this.$refs.select.classList.remove('select-error');
         },
         sendValue: function (url) {
-            console.log(this.value === '');
             if (this.value === '') {
                 this.$refs.select.focus();
                 this.$refs.select.classList.add('select-error');
                 this.$refs.select.nextElementSibling.classList.add('text-error');
                 this.message = 'Debe seleccionar una categoría para continuar';
             } else {
-                window.location.href = `${url}/nueva?categoria=${this.value}`;
+                window.location.href = `${url}/productos?categoria=${this.value}`;
             }
         }
     }
