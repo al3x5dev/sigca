@@ -34,6 +34,7 @@
 <body class="bg-base-300" x-data="menu()">
 
 
+@include('partials.loading-modal')
 
         <main class="min-h-dvh max-w-dvw">
 

@@ -5,141 +5,158 @@
 
 @section('content')
 @include('partials.breadcrumbs')
-<div class="toast toast-top toast-end z-6 md:max-w-6/10 cursor-pointer" id="form-response"
-    x-data="{toggle:true}"
-    @click="toggle=!toggle"
-    x-show="toggle"></div>
 
-<section x-data="searchProduct">
-    <h3 class="mb-4 font-semibold text-2xl">Nueva Solicitud</h3>
+<section x-data="makeRequest" x-init='init(@json($productos))'>
 
+    <div class="toast toast-top toast-end z-6 md:max-w-6/10 cursor-pointer" id="form-response"
+        x-data="{toggle:true}"
+        @click="toggle=!toggle"
+        x-show="toggle"></div>
 
-    <form class="card shadow-md border border-base-300"
-        hx-post="{{ route('solicitud.save') }}"
-        hx-target="#form-response"
-        hx-swap="innerHTML"
-        hx-trigger="submit">
-        @csrf
-        <input type="hidden" value="{{$solicitud['numero']}}" name="numero" />
-        <input type="hidden" value="{{$categoria}}" name="categoria" />
-        <input type="hidden" value="{{Auth::user()->id}}" name="usuario" />
-        <input type="hidden" name="productos" :value="JSON.stringify(products)" />
+        
 
-        <div class="card-title font-mono flex justify-between items-center border-b border-base-300 p-5">
-            <h3 class="text-2xl">Solicitud #{{$solicitud['numero']}}</h3>
-            <button class="btn btn-md btn-primary">Guardar</button>
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="font-semibold text-2xl">Solicitud No. {{$solic_num}}</h2>
+    </div>
+
+    <div class="fab">
+        <div class="tooltip tooltip-left" data-tip="Guardar">
+            <button @click="valForm()" type="submit" form="saveRequest" class="btn btn-xl btn-circle btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                    <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M14 4l0 4l-6 0l0 -4" />
+                </svg>
+            </button>
         </div>
-        <div class="card-body">
+    </div>
 
-            <h4 class="text-xl mb-3">Productos</h4>
-            <div class="flex-col">
+    <div class="flex flex-wrap lg:flex-nowrap gap-4">
+        <form id="saveRequest" class="card shadow-md border border-base-300 mb-10 lg:[]w-8/12"
+            hx-post="{{route('solicitud.save')}}"
+            hx-trigger="submit"
+            hx-indicator="#loadingModal"
+            hx-target="#form-response">
+            @csrf
+            <input type="hidden" name="numero" value="{{$solic_num}}">
+            <input type="hidden" name="productos" :value="JSON.stringify(products)">
 
-
-
-                <div class="mb-4">
-
-                    <template x-for="(item, index) in products" :key="index">
-                        <template x-if="true">
-                            <div class="card border border-base-300 shadow-sm p-3 mb-3">
-                                <div class="grid grid-cols-[auto_1fr_48px] gap-2.5">
-                                    <div><span>Cant: <b x-text="item.Cantidad"></b></span></div>
-                                    <span x-text="item.Desc_Producto"></span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-error cursor-pointer" @click="deleteProduct(index)">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M4 7l16 0" />
-                                        <path d="M10 11l0 6" />
-                                        <path d="M14 11l0 6" />
-                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </template>
-                    </template>
-
-                </div>
-
-
-
-                <a class="btn btn-dash w-full" onclick="toggleModal(addProduct)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M12 5l0 14" />
-                        <path d="M5 12l14 0" />
-                    </svg> Agregar Producto
-                </a>
-
-            </div>
-        </div>
-    </form>
-
-    <dialog id="addProduct" class="p-4 w-full h-full flex justify-center items-center backdrop-blur-xs">
-        <div class="text-base-content card bg-base-100 shadow-2xl border border-base-300 w-lg transition-transform">
             <div class="card-body">
 
-                <div class="block">
-                    <svg onclick="toggleModal(addProduct)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="float-end cursor-pointer">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M18 6l-12 12" />
-                        <path d="M6 6l12 12" />
-                    </svg>
-                </div>
-                <div class="card-title mb-4">Nuevo Producto</div>
+                <div class="">
+                    <div class="grid gap-0 md:gap-6 md:grid-cols-2">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Área <span class="text-error font-bold text-[1.25em]">*</span></legend>
+                            <select class="select w-full transition-colors duration-200" name="area" required @change="isSelected()">
+                                <option disabled selected value="">Seleccione un área</option>
+                                @foreach ($areas as $asset)
+                                <option value="{{$asset->id}}">{{$asset->area}}</option>
+                                @endforeach
+                            </select>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Destino por Centro de Costo<span class="text-error font-bold text-[1.25em]">*</span></legend>
+                            <select class="select w-full transition-colors duration-200" name="ccosto" required @change="isSelected()">
+                                <option disabled selected value="">Seleccione un centro de costo</option>
+                                @foreach ($c_costo as $cc)
+                                <option value="{{$cc->idcc}}">{{$cc->ccosto}}</option>
+                                @endforeach
+                            </select>
+
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Categorías<span class="text-error font-bold text-[1.25em]">*</span></legend>
+                            <select class="select w-full transition-colors duration-200" name="categoria" required @change="isSelected()">
+                                <option disabled selected value="">Seleccione una categoría</option>
+                                @foreach ($categorias as $categoria)
+                                <option value="{{$categoria->id}}">{{$categoria->tipo}}</option>
+                                @endforeach
+                            </select>
+
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Prioridad<span class="text-error font-bold text-[1.25em]">*</span></legend>
+                            <select class="select w-full transition-colors duration-200" name="prioridad" required @change="isSelected()">
+                                <option disabled selected value="">Selecciona una prioridad</option>
+                                @foreach ($prioridades as $prioridad)
+                                <option value="{{$prioridad->id}}">{{$prioridad->tipo}}</option>
+                                @endforeach
+                            </select>
+
+                        </fieldset>
+                    </div>
 
 
-                <div x-show="errors" x-transition.duration.250ms role="alert" class="alert alert-error">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span x-text="errorMessage"></span>
-                </div>
-
-
-                <fieldset class="fieldset">
-                    <legend class="fieldset-legend">Almacén</legend>
-                    <select class="select w-full mb-2" x-model="almacen" x-ref="selectField" @change="selection">
-                        <option class="text-base-content/50">Seleccionar almacén</option>
-                        @foreach ($almacenes as $almacen)
-                        <option value="{{$almacen->Id_Almacen}}">{{$almacen->Id_Almacen}} - {{$almacen->Desc_Almacen}}</option>
-                        @endforeach
-                    </select>
-                </fieldset>
-
-                <fieldset class="fieldset">
-                    <legend class="fieldset-legend">Descripción del producto</legend>
-                    <input type="text" class="input w-full" placeholder="Buscar"
-                        x-model="search"
-                        x-ref="input"
-                        @focus="checkAlmacen"
-                        @click="setUrl('{{route('api.producto')}}')"
-                        @input.debounce="handlerInput">
-                    <p class="label" x-text="amount" style="text-wrap: auto;"></p>
-                </fieldset>
-
-                <ul id="product-list" class="list bg-base-100 rounded-box shadow-2xl/30 absolute left-6 overflow-x-auto" x-show="items.length>0"
-                    x-transition.duration>
-
-                    <template x-for="(item, index) in items" :key="index">
-                        <li class="list-row cursor-pointer hover:bg-base-200" x-text="item.Desc_Producto" @click="selectItem(item)">
-                        </li>
-                    </template>
-                </ul>
-
-                <fieldset class="fieldset">
-                    <legend class="fieldset-legend">Cantidad</legend>
-                    <input x-ref="cantidad" @input="inputCant" type="number" class="input w-full" placeholder="0" min="0" required />
-                </fieldset>
-                <p class="label text-error" x-text="amountErr" style="text-wrap: auto;"></p>
-                <br>
-
-                <div class="flex justify-end mt-8">
-                    <button class="btn mr-3" onclick="toggleModal(addProduct)">Cancelar</button>
-                    <button class="btn btn-primary" @click="addProduct">Añadir</button>
+                    <fieldset class="fieldset mt-2">
+                        <legend class="fieldset-legend">Detalles</legend>
+                        <textarea class="textarea h-32 w-full" name="detalles" placeholder="Escribe aquí detalles sobre la solicitud"></textarea>
+                    </fieldset>
                 </div>
 
+                <hr class="my-2.5">
+
+                <div class="max-w-dvw w-full mr-[-8em] overflow-x-auto">
+
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Almacén</th>
+                                    <th>Disponibilidad</th>
+                                    <th>Solicitar</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($productos as $index => $producto)
+                                <tr id="{{$index}}" class="hover:bg-base-200 ">
+                                    <td>{{$producto->Id_Producto ?? null}}</td>
+                                    <td>{{$producto->Desc_Producto}}</td>
+                                    <td>{{$producto->Id_Almacen ?? null}}</td>
+                                    <td>
+                                        {{round($producto->Existencia_Actual ?? 0,2) }}
+                                        {{$producto->UM_Almacen ?? null}}
+                                    </td>
+                                    <td title="Doble click para modificar" class="cantSolicita">
+                                        <span class="px-3 py-2.5 hover:cursor-pointer"
+                                            x-text="cantidad_solicitada"
+                                            @blur="editSave($event,{{$index}})"
+                                            @click="$event.target.contentEditable=true"></span>
+                                    </td>
+                                    <td>
+                                        <svg @click="delProduct({{$index}})" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-error hover:cursor-pointer">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M4 7l16 0" />
+                                            <path d="M10 11l0 6" />
+                                            <path d="M14 11l0 6" />
+                                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                        </svg>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+        </form>
+
+        <div hidden class="lg:w-4/12 mb-8">
+            <h3 class="text-xl font-semibold mb-2.5 text-center">Solicitudes similares</h3>
+            <template x-for="(item, index) in searchEngine" :key="index">
+                <div class="card p-3 bg-base-200 hover:bg-base-300 mb-3 cursor-pointer">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas nihil hic minima dolorem. Quas autem voluptas aperiam, eaque accusamus numquam sequi ducimus, pariatur, nemo tempore nesciunt! Officia dolores saepe consequuntur?
+            </div>
+            </template>
         </div>
-    </dialog>
+    </div>
 </section>
 
 @endsection

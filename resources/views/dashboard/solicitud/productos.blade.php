@@ -10,7 +10,7 @@
 
     <div class="flex md:flex-row flex-col gap-8">
         <div class="lg:w-8/12 w-full">
-            <form class="mt-4 mb-10 flex flex-col gap-4" method="post" action="{{route('solicitud.nueva')}}">
+            <form class="mt-4 mb-10 flex flex-col gap-4 pb-[8px] sticky top-[64px] z-10 bg-base-100 shadow-[0_20px_20px_16px_var(--color-base-100)]" method="post" action="{{route('solicitud.nueva')}}">
                 <div>
                     <label class="input w-full">
                         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@
                     @csrf
                     <input type="hidden" name="productos" :value="JSON.stringify(products)" />
                 </div>
-                <div class="flex gap-4 flex-wrap">
+                <div class="flex gap-4 flex-wrap justify-between md:justify-start">
                     <button type="submit"  class="btn btn-primary "
                         x-bind:class="{ 'btn-disabled': products.length < 1}"
                         @click="enviar">
