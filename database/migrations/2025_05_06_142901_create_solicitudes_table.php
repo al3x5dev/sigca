@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreignId('prioridad')->references('id')->on('Prioridades')->onDelete('cascade');
             $table->text('detalles');
             $table->string('area')->nullable(false);
-            $table->string('centro_costo')->nullable(false);
+            $table->string('ccosto')->nullable(false);
             $table->dateTime('fecha')->useCurrent();
 
             $table->foreign('categoria')->references('id')->on('Categorias')->onDelete('no action');
