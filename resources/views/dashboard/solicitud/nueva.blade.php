@@ -33,7 +33,7 @@
     </div>
 
     <div class="flex flex-wrap lg:flex-nowrap gap-4">
-        <form id="saveRequest" class="card shadow-md border border-base-300 mb-10 lg:[]w-8/12"
+        <form id="saveRequest" class="card shadow-md border border-base-300 mb-10 lg:w-12/12"
             hx-post="{{route('solicitud.save')}}"
             hx-trigger="submit"
             hx-indicator="#loadingModal"
@@ -50,8 +50,8 @@
                             <legend class="fieldset-legend">Área <span class="text-error font-bold text-[1.25em]">*</span></legend>
                             <select class="select w-full transition-colors duration-200" name="area" required @change="isSelected()">
                                 <option disabled selected value="">Seleccione un área</option>
-                                @foreach ($areas as $asset)
-                                <option value="{{$asset->id}}">{{$asset->area}}</option>
+                                @foreach ($areas as $a)
+                                <option value="{{$a->id}}">{{$a->area}}</option>
                                 @endforeach
                             </select>
                         </fieldset>
@@ -93,7 +93,7 @@
 
                     <fieldset class="fieldset mt-2">
                         <legend class="fieldset-legend">Detalles</legend>
-                        <textarea class="textarea h-32 w-full" name="detalles" placeholder="Escribe aquí detalles sobre la solicitud"></textarea>
+                        <textarea class="textarea h-32 w-full" name="detalles" placeholder="Escribe aquí detalles sobre la solicitud" spellcheck="false"></textarea>
                     </fieldset>
                 </div>
 
