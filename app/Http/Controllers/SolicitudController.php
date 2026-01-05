@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Categoria;
+use App\Models\CentroCosto;
+use App\Models\Prioridad;
 use App\Models\Producto;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
@@ -19,43 +22,15 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
-        /*$items = Solicitud::with(['productos', 'comprador'])
-            ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
-            ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
-            ->join('Estados as e', 'e.id', '=', 'sh.estado')
-            ->select(
-                'Solicitudes.*',
-                'Solicitudes.id_comprador as comprador',
-                'c.tipo as categoria',
-                'e.id as estado_id',
-                'e.estado as estado',
-                'sh.fecha'
-            )
-            ->orderBy('e.id', 'asc')
-            ->orderBy('sh.fecha', 'desc')
-            ->paginate(10);*/
-
-        $items = Solicitud::with(['productos', 'comprador'])
-            ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
-            ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
-            ->join('Estados as e', 'e.id', '=', 'sh.estado')
-            ->select([
-                'Solicitudes.*',
-                'Solicitudes.id_comprador as comprador',
-                'c.tipo as categoria',
-                'e.id as estado_id',
-                'e.estado as estado',
-                'sh.fecha'
-            ])
-            ->whereIn('e.id', function ($query) {
-                $query->select('estado')
-                    ->from('SolicitudesHistorico')
-                    ->whereColumn('SolicitudesHistorico.id_solicitud', 'Solicitudes.id')
-                    ->orderBy('fecha', 'desc')
-                    ->limit(1);
-            })->where('Solicitudes.id_usuario',Auth::user()->id)
-            ->orderByRaw('e.id ASC, sh.fecha DESC')
-            ->paginate(10);
+        $items = Solicitud::with(
+            'productos',
+            'comprador',
+            'prioridadSolicitud',
+            'categoriaSolicitud',
+            'vwArea',
+            'vwCcosto',
+            'ultimoEstado.estadoDetalles'
+            )->get();
 
         $data = [
             'page' => [
@@ -69,20 +44,27 @@ class SolicitudController extends Controller
     }
 
     /**
+     * Productos
+     */
+    public function productos()
+    {
+        $data = [
+            'page' => [
+                'name' => 'Buscar productos en almacén'
+            ]
+        ];
+        return view('dashboard.solicitud.productos', $data);
+    }
+
+    /**
      * Vista nueva solicitud
      */
     public function nueva(Request $request)
     {
 
         $last = Solicitud::orderBy('fecha', 'desc')->pluck('numero')->first();
-        $almacenes = DB::connection('une_2316a_int')->select('SELECT * FROM vw_SIGCA_Almacenes');
-        $categoria = $request->query('categoria', false);
 
-        $categoriasId = Categoria::all('id')->pluck('id')->toArray();
 
-        if (!$categoria || !in_array($categoria, $categoriasId)) {
-            abort(404);
-        }
 
         // Calcula # solicitud
         if (!empty($last)) {
@@ -94,17 +76,17 @@ class SolicitudController extends Controller
             $sum = 1;
         }
 
-
         $data = [
             'page' => [
                 'parent' => [self::PARENT_PAGE, route(self::URL)],
                 'name' => 'Nueva Solicitud'
             ],
-            'solicitud' => [
-                'numero' => $sum . '/' . date('Y')
-            ],
-            'categoria' => $categoria,
-            'almacenes' => $almacenes
+            'solic_num' => $sum . '/' . date('Y'),
+            'categorias' => Categoria::all(),
+            'prioridades' => Prioridad::orderBy('id', 'asc')->get(),
+            'areas' => Area::all(),
+            'c_costo' => CentroCosto::all(),
+            'productos' => json_decode($request->post('productos'), false),
         ];
         return view('dashboard.solicitud.nueva', $data);
     }
@@ -130,8 +112,12 @@ class SolicitudController extends Controller
             $newSolicitud = new Solicitud();
             $newSolicitud->fill([
                 'numero' => $request->post('numero'),
-                'id_usuario' => $request->post('usuario'),
-                'categoria' => $request->post('categoria')
+                'id_usuario' => Auth::user()->id,
+                'categoria' => $request->post('categoria'),
+                'prioridad' => $request->post('prioridad'),
+                'detalles' => $request->post('detalles') ?? '',
+                'area' => $request->post('area'),
+                'ccosto' => $request->post('ccosto')
             ]);
             if ($newSolicitud->save()) {
                 $lastSolicitud = Solicitud::where('numero', $request->post('numero'))->first();
@@ -145,8 +131,7 @@ class SolicitudController extends Controller
                         'id_solicitud' => $lastSolicitud->id,
                         'id_producto' => $id,
                         'descripcion' => $producto['Desc_Producto'],
-                        'cant_solicitada' => $producto['Cantidad'],
-                        'nuevo' => str_starts_with($id, 'ID_')
+                        'cant_solicitada' => $producto['Solicitado']
                     ]);
                     $save[] = $addProducto->save();
                 }
