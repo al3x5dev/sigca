@@ -28,7 +28,7 @@ class SolicitudHistorico extends Model
     // Deshabilitar los timestamps
     public $timestamps = false;
 
-    public function estado() : BelongsTo
+    public function estadoDetalles() : BelongsTo
     {
         return $this->belongsTo(Estado::class,'estado');
     }

@@ -25,6 +25,13 @@ class Solicitud extends Model
         'fecha',
     ];
 
+    protected $casts = [
+        'fecha' => 'datetime',
+        'area' => 'string',      // <-- ¡AÑADE ESTA LÍNEA!
+        'ccosto' => 'string',    // <-- ¡Y ESTA TAMBIÉN!
+        // 'detalles' es 'text' y no necesita cast, 'integer' tampoco si no quieres.
+    ];
+
     public $timestamps = false;
 
     public function usuario(): BelongsTo
@@ -50,11 +57,31 @@ class Solicitud extends Model
     public function ultimoEstado()
     {
         return $this->hasOne(SolicitudHistorico::class, 'id_solicitud')
-            ->latestOfMany('fecha');
+            ->latest('fecha');
     }
 
-    public function categoria(): BelongsTo
+    public function categoriaSolicitud(): BelongsTo
     {
         return $this->belongsTo(Categoria::class, 'categoria');
+    }
+
+    public function prioridadSolicitud(): BelongsTo
+    {
+        return $this->belongsTo(Prioridad::class, 'prioridad');
+    }
+
+    public function vwArea(): BelongsTo
+    {
+        return $this->belongsTo(Area::class, 'area');
+    }
+
+    /**
+     * Obtiene los datos del centro de costo desde la vista correspondiente.
+     */
+    public function vwCcosto()
+    {
+        // Similar al anterior. Ajusta 'id_ccosto' al nombre de la columna
+        // clave en tu vista 'vista_ccostos'.
+        return $this->belongsTo(CentroCosto::class, 'ccosto', 'idcc');
     }
 }
