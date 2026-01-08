@@ -17,17 +17,31 @@ class ProductoController extends Controller
             // Realiza la consulta a la base de datos
             $products = DB::connection('une_2316a_int')
                 ->table('vw_SIGCA_ProductosExistencia')
-                ->select('Id_Producto', 'Desc_Producto', 'Existencia_Actual','UM_Almacen','Id_Almacen')
+                ->select('Id_Producto', 'Desc_Producto', 'Existencia_Actual', 'UM_Almacen', 'Id_Almacen')
                 //->where('Id_Almacen',$almacen)
                 ->where('Desc_Producto', 'LIKE', "%{$query}%")
                 /*->take(15)*/
                 ->get();
         } else {
-            $products=[];
+            $products = [];
         }
 
 
         // Devuelve la respuesta JSON
         return response()->json($products);
+    }
+
+    public function existsProducto($id): JsonResponse
+    {
+        if (!str_starts_with($id,'ID')) {
+            $product = DB::connection('une_2316a_int')
+            ->table('vw_SIGCA_ProductosExistencia')
+            ->select('Existencia_Actual', 'UM_Almacen')
+            ->where('Id_Producto', $id)
+            ->get()[0];
+        } else {
+            $product=["Existencia_Actual"=>".000000","UM_Almacen"=>" "];
+        }
+        return response()->json($product);
     }
 }
