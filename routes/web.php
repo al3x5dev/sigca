@@ -46,7 +46,9 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
         //Route::get('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
         Route::get('/productos', [SolicitudController::class, 'productos'])->name('productos');
         Route::post('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
+        Route::get('/{anno}/{numb}', [SolicitudController::class, 'mostrar'])->name('mostrar');
         Route::post('/save', [SolicitudController::class, 'addSolicitud'])->name('save');
+        Route::post('/update', [SolicitudController::class, 'updSolicitud'])->name('update');
     });
 
     //gestion
@@ -70,6 +72,7 @@ Route::prefix('api')
     ->middleware(['ldap.auth', 'no.cache'])
     ->group(function () {
         Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
+        Route::get('/p/{id}', [ProductoController::class, 'existsProducto'])->name('existsProducto');
         Route::post('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
         Route::post('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
