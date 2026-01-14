@@ -1,8 +1,8 @@
-<aside id="sidebar" class="fixed left-0 z-30
+<aside id="sidebar" class="fixed left-0
 h-full bg-base-300
 transition-all duration-300 ease-in-out
 px-4 md:pt-4 md:pb-8 py-2  md:mt-2.5
-flex flex-col
+flex flex-col z-[1] md:z-0
 "
     x-bind:class="{
             'w-64': isDesktop && rail,
