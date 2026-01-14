@@ -48,7 +48,7 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
         Route::post('/nueva', [SolicitudController::class, 'nueva'])->name('nueva');
         Route::get('/{anno}/{numb}', [SolicitudController::class, 'mostrar'])->name('mostrar');
         Route::post('/save', [SolicitudController::class, 'addSolicitud'])->name('save');
-        Route::post('/update', [SolicitudController::class, 'updSolicitud'])->name('update');
+        Route::put('/update', [SolicitudController::class, 'updSolicitud'])->name('update');
     });
 
     //gestion

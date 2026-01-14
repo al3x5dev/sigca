@@ -157,12 +157,16 @@ function makeRequest() {
         products: [],
         cantidad_solicitada: 0,
         isValid: true,
+        edit: false,
+        svg: '',
+        pencil: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>`,
         init(products) {
             this.products = products;
+            this.svg = this.pencil
         },
         editSave(e, i) {
             if (isNaN(Number(e.target.textContent)) || e.target.textContent < 1) {
-                alert('error')
+                alert('La cantidad debe ser un número mayor a 0')
             }
             this.products[i].Solicitado = e.target.textContent;
             e.target.classList.remove('custom-error');
@@ -205,11 +209,150 @@ function makeRequest() {
                 event.preventDefault();
             }
         },
-        searchEngine(){ // PARA BUSQUEDA DE SOLICITUDES SIMILARES
+        async disponibilidad(id) {
+            const url = window.location.origin;
+
+            try {
+                const response = await fetch(`${url}/api/p/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: null
+                });
+                if (!response.ok) {
+                    throw new Error(`Response: ${response.status} [${response.statusText}]`);
+                }
+
+                let txt = await response.json();
+                return `${Math.abs(txt.Existencia_Actual)} ${txt.UM_Almacen}`;
+
+            } catch (error) {
+                console.error(error);
+                alert(error);
+            }
+        },
+        toggleBtnSave() {
+            this.edit = !this.edit;
+
+
+
+            const fab = this.$refs.fab;
+            if (this.edit) {
+                /**
+                 * Botones
+                 */
+                fab.setAttribute('data-tip', 'Guardar');
+                fab.children[0].classList.toggle('btn-accent');
+                fab.children[0].classList.toggle('btn-primary');
+                this.svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>`;
+
+                /**
+                 * Elementos
+                 */
+                this.$refs.area.removeAttribute('disabled');
+                this.$refs.ccosto.removeAttribute('disabled');
+                this.$refs.categoria.removeAttribute('disabled');
+                this.$refs.prioridad.removeAttribute('disabled');
+                this.$refs.textarea.removeAttribute('disabled');
+
+                this.products.forEach(p => {
+                    let editable = document.getElementById(`editable-${p.id_solicitud}`);
+                    if (editable!=null) {
+                        editable.setAttribute('title', "Doble click para modificar");
+                    }
+                });
+                //this.$refs.editable.setAttribute('title', "Doble click para modificar");
+                fab.firstElementChild.removeAttribute('form');
+            } else {
+                /**
+                 * Botones
+                 */
+                fab.setAttribute('data-tip', 'Editar');
+                this.svg = this.pencil
+                fab.children[0].classList.toggle('btn-accent');
+                fab.children[0].classList.toggle('btn-primary');
+
+                /**
+                 * Elementos
+                 */
+                setTimeout(() => {
+                    this.$refs.area.setAttribute('disabled', 'true');
+                    this.$refs.ccosto.setAttribute('disabled', 'true');
+                    this.$refs.categoria.setAttribute('disabled', 'true');
+                    this.$refs.prioridad.setAttribute('disabled', 'true');
+                    this.$refs.textarea.setAttribute('disabled', 'true');
+                }, 100);
+
+                this.products.forEach(p => {
+                    let editable = document.getElementById(`editable-${p.id_solicitud}`);
+                    if (editable!=null) {
+                        editable.removeAttribute('title');
+                    }
+                });
+                //this.$refs.editable.removeAttribute('title');
+
+                /**
+                 * Procesa solicitud
+                 */
+
+                fab.firstElementChild.setAttribute('form', 'saveRequest');
+                this.valForm();
+
+            }
+        },
+        searchEngine() { // PARA BUSQUEDA DE SOLICITUDES SIMILARES
         }
     };
 }
 window.makeRequest = makeRequest;
+
+
+
+/**
+ * Elimina solicitud
+ */
+function deleteModal() {
+    return {
+        id: null,
+        numero: null,
+        open: false,
+        async del(token) {
+            const url = window.location.origin;
+            const fila = document.querySelector(`tr#solicitud-${this.id ?? 0}`);
+            const estado = document.querySelector(`td#estado-${this.id ?? 0}>span`);
+
+            try {
+                const response = await fetch(`${url}/api/delsolicitud/${this.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: null
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Response: ${response.status} [${response.statusText}]`);
+                }
+
+                let data = await response.json();
+
+                if (data.saved != 'ok') {
+                    throw new Error("Error al salvar los datos");
+                }
+
+                this.open = false;
+                fila.classList.add('text-gray-500');
+                estado.className = 'badge badge-soft rounded-full w-24 badge-error';
+                estado.innerText = 'Cancelada';
+            } catch (error) {
+                alert(error);
+            }
+        }
+    };
+}
+window.deleteModal = deleteModal;
 
 
 window.Alpine = Alpine;
