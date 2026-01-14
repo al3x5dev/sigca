@@ -6,7 +6,7 @@
 @section('content')
 
 
-<section x-data="changeState" class="mb-20">
+<section class="mb-20">
     <div class="flex justify-between items-center mb-6 ">
         <h3 class="text-2xl font-semibold ">{{$page['name']}}</h3>
         <a href="{{route('solicitud.productos')}}" class="btn btn-primary btn-lg md:btn-md rounded-2xl ">
@@ -51,7 +51,7 @@
                                 {{$item->prioridadSolicitud->tipo}}
                             </span>
                         </td>
-                        <td>
+                        <td id="estado-{{$item->id}}">
                             <span class="badge badge-soft rounded-full w-24
                             {{ $item->ultimoEstado->estado == 1 ? 'badge-primary' : '' }}
                             {{ $item->ultimoEstado->estado == 2 ? 'badge-info' : '' }}
@@ -69,29 +69,21 @@
                         <td>
                             <div class="flex gap-4">
 
-                                <div class="tooltip" data-tip="Visualizar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-slate-400" @click="openModal({{json_encode($item->getRelation('productos'))}})">
+                                @php
+                                $expl = explode('/',$item->numero);
+                                @endphp
+
+                                <a href="{{route('solicitud.mostrar',['anno' => $expl[1], 'numb' => $expl[0]])}}" class="tooltip" data-tip="Visualizar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-slate-400">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                                         <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
                                     </svg>
-                                </div>
+                                </a>
 
-                                <div hidden class="tooltip" data-tip="Editar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-info">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
-                                        <path d="M13.5 6.5l4 4" />
-                                    </svg>
-                                </div>
-
-                                <form
-                                    hx-post="{{route('api.deleteSolicitud',$item->id )}}"
-                                    hx-trigger="click"
-                                    hx-target="#solicitud-{{ $item->id }}"
-                                    hx-target="closest tr" hx-swap="outerHTML swap:1s">
-                                    @csrf
+                                @if ($item->ultimoEstado->estado != 4)
+                                    <button @click="$dispatch('openmodal', { id:'{{$item->id}}', numero: '{{$item->numero}}', open: true})">
                                     <div class="tooltip" data-tip="Eliminar">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-error">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -102,8 +94,8 @@
                                             <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                                         </svg>
                                     </div>
-
-                                </form>
+                                </button>
+                                @endif
 
                             </div>
                         </td>
@@ -115,8 +107,8 @@
 
     </div>
 
-    <!-- Open the modal  -->
 </section>
-
+<!-- Modal de Confirmación -->
+@include('partials.modal-delete')
 
 @endsection
