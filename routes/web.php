@@ -73,7 +73,7 @@ Route::prefix('api')
     ->group(function () {
         Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
         Route::get('/p/{id}', [ProductoController::class, 'existsProducto'])->name('existsProducto');
-        Route::post('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
+        Route::delete('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
         Route::post('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
     });
