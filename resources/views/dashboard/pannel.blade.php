@@ -119,5 +119,4 @@
     </div>
   </div>
 </section>
-@include('partials.modal-new-products')
 @endsection
