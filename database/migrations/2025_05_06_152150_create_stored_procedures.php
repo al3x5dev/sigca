@@ -69,9 +69,19 @@ return new class extends Migration
             BEGIN
                 UPDATE ps
                 SET ps.cant_recibida = rpc.Cantidad_Recibida
-                FROM ProductosSolicitud ps 
-                INNER JOIN MEDIASERVER.UNE_2316A_INT.dbo.vw_SIGCA_RecepcionProductosContabilizado rpc ON ps.id_producto = rpc.Id_Producto
-                INNER JOIN Sync sy ON rpc.Fecha_ent > sy.fecha;
+                FROM ProductosSolicitud ps
+				INNER JOIN SolicitudesHistorico sh on ps.id_solicitud=sh.id_solicitud
+                INNER JOIN MEDIASERVER.UNE_2316A_INT.dbo.vw_SIGCA_RecepcionProductosContabilizado rpc
+				ON ps.id_producto = rpc.Id_Producto
+                INNER JOIN Sync sy ON rpc.Fecha_ent >= sy.fecha
+				
+				where ps.cant_recibida < ps.cant_solicitada
+				AND EXISTS (  -- Verifica que no existan registros con estado 1, 3 o 4 para el mismo id_solicitud
+				    SELECT 1
+				    FROM SolicitudesHistorico sh2
+				    WHERE sh2.id_solicitud = sh.id_solicitud
+				    AND sh2.estado NOT IN (1, 3, 4)
+				);
             END;
         ");
 
@@ -81,10 +91,17 @@ return new class extends Migration
             AS
             BEGIN
                 UPDATE sh
-                SET sh.estado = 3
-                FROM SolicitudesHistorico sh
-                INNER JOIN ProductosSolicitud ps ON ps.id_solicitud = sh.id_solicitud
-                WHERE ps.cant_solicitada = ps.cant_recibida;
+				SET sh.estado = 3
+				FROM SolicitudesHistorico sh
+				INNER JOIN ProductosSolicitud ps ON ps.id_solicitud = sh.id_solicitud
+				WHERE ps.cant_solicitada <= ps.cant_recibida
+				AND sh.estado = 2  -- Solo actualiza donde el estado sea 2
+				AND NOT EXISTS (  -- Verifica que no existan registros con estado 3 o 4 para id_solicitud
+				    SELECT 1
+				    FROM SolicitudesHistorico sh2
+				    WHERE sh2.id_solicitud = sh.id_solicitud
+				    AND sh2.estado IN (3, 4)
+				);
             END;
         ");
 
@@ -94,7 +111,7 @@ return new class extends Migration
             AS
             BEGIN
                 DELETE FROM Sync;
-                INSERT INTO Sync VALUES(DEFAULT);
+                INSERT INTO Sync VALUES(CONVERT(date, GETDATE()));
             END;
         ");
     }
