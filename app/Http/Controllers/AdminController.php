@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
+use App\Models\Rol;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 
@@ -34,6 +36,27 @@ class AdminController extends Controller
 
         return view('dashboard.admin.users', $data);
     }
+
+    public function userOptions($id)
+    {
+        $user = Usuario::with(['rol'])->findOrFail($id);
+
+        //dd($user);
+
+        $data = [
+            'page' => [
+                'parent' => [self::PARENT_PAGE, route(self::URL)],
+                'name' => 'Gestión de Permisos'
+            ],
+            'usuario' => $user,
+            'roles'=>Rol::all(),
+            'categorias'=>Categoria::all()
+        ];
+
+        return view('dashboard.admin.user-options', $data);
+    }
+
+
 
     /**
      * Retorna los datos paginados y filtrados en formato JSON.

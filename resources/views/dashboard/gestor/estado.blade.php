@@ -10,52 +10,59 @@
     x-show="toggle"
     @click="toggle=!toggle">
 </div>
-<section
-    x-data="managerRequest"
-    x-init="start(`{{$state}}`)
-">
+<section>
 
     <div class="flex justify-between items-center mb-6">
         <h2 class="font-semibold text-2xl">{{$page['name']}}</h2>
 
-        <template x-if="retorn">
-            <button form="updSolicitud" class="btn btn-md btn-secondary"
-            x-text="btnAction"
-            @click="window.history.back()"
-            ></button>
-        </template>
-
-        <template x-if="!retorn">
-            <button type="submit" form="updSolicitud" class="btn btn-md btn-primary" x-text="btnAction">
-            </button>
-        </template>
-
+        <button
+            type="submit" role="button" form="updSolicitud"
+            class="btn btn-md btn-primary
+        {{$solicitud->ultimoEstado->estado!=1? 'hidden':''}}">Aprobar</button>
     </div>
-    <form id="updSolicitud" class="card shadow-md border border-base-300"
-        hx-post="{{route('api.changeStateSolicitud',[$id])}}"
+    <form id="updSolicitud" class="card shadow-md border border-base-300" method="get"
+        hx-put="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
         hx-trigger="submit"
+        hx-indicator="#loadingModal"
         hx-target="#toast">
         @csrf
-        @if ($state==='En Proceso')
-        <input type="hidden" name="productos" :value="JSON.stringify(products)" />
-        <input type="hidden" name="type" value="actualizar">
-        @else
         <input type="hidden" name="type" value="aprobar">
-        @endif
 
-        @foreach ($items as $item)
         <div class="card-body">
 
             <p>
-                <b>Solicitante:</b> {{$item->usuario->nombre}}
+                @if ($solicitud->ultimoEstado->estado>1)
+                @if ($solicitud->ultimoEstado->estado==4)
+                <b class="text-error">Eliminado por: {{$solicitud->ultimoEstado->usuario->nombre}}</b>
+                @else
+                <b>Gestionado por: {{$solicitud->ultimoEstado->usuario->nombre}}</b>
+                @endif
+                @else
+                <b>Gestionado por:</b>
+                @endif
                 <br>
-                <b>Cargo:</b> {{$item->usuario->cargo}}
+                <b>Prioridad:</b> <span class=" font-bold
+                            {{ $solicitud->prioridad == 1 ? 'text-error' : '' }}
+                            {{ $solicitud->prioridad == 2 ? 'text-orange-400 ' : '' }}
+                            {{ $solicitud->prioridad == 3 ? 'text-accent' : '' }}">
+                    {{$solicitud->prioridadSolicitud->tipo}}
+                </span>
                 <br>
-                <b>Categoría:</b> {{$item->categoria}}
+                <b>Solicitante:</b> {{$solicitud->usuario->nombre}}
                 <br>
-                <b>Estado:</b> {{$item->estado}}
+                <b>Cargo:</b> {{$solicitud->usuario->cargo}}
                 <br>
-                <b>Fecha:</b> {{date('d/m/Y',strtotime($item->fecha))}}
+                <b>Categoría:</b> {{$solicitud->categoriaSolicitud->tipo}}
+                <br>
+                <b>Estado:</b> {{$state}}
+                <br>
+                <b>Área:</b> {{$solicitud->vwArea->area}}
+                <br>
+                <b>Centro de costo:</b> {{$solicitud->vwCcosto->ccosto}}
+                <br>
+                <b>Fecha:</b> {{date('d/m/Y',strtotime($solicitud->fecha))}}
+                <br>
+                <b>Detalles:</b> {{$solicitud->detalles}}
             </p>
             <hr class="my-2.5">
 
@@ -67,59 +74,30 @@
                             <tr>
                                 <th>Código</th>
                                 <th>Descripción</th>
+                                <th>Almacén</th>
                                 <th>Solcitado</th>
                                 <th>Recibido</th>
                             </tr>
                         </thead>
                         <tbody>
 
-                            @foreach ($item->productos as $producto)
+                            @foreach ($solicitud->productos as $producto)
 
-                            @if ($state!=='En Proceso')
                             <tr class="cursor-default hover:bg-base-200">
                                 <td>
-                                    @if ($producto->nuevo == false )
-                                    {{$producto->id_producto}}
-                                    @else
-                                    -
-                                    @endif
+                                    {{str_starts_with($producto->id_producto,'ID')?'':$producto->id_producto}}
                                 </td>
                                 <td>{{$producto->descripcion}}</td>
+                                <td>{{$producto->almacen??''}}</td>
                                 <td>{{$producto->cant_solicitada}}</td>
-                                <td>
-                                    <span>
-                                        {{$producto->cant_recibida}}
-                                    </span>
-                                </td>
+                                <td>{{$producto->cant_recibida}}</td>
                             </tr>
-                            @else
-                            @if ($producto->cant_solicitada > $producto->cant_recibida)
-                            <tr class="cursor-default hover:bg-base-200">
-                                <td>
-                                    @if ($producto->nuevo == false )
-                                    {{$producto->id_producto}}
-                                    @else
-                                    -
-                                    @endif
-                                </td>
-                                <td>{{$producto->descripcion}}</td>
-                                <td>{{$producto->cant_solicitada}}</td>
-                                <td>
-                                    <span id="{{$producto->id_producto}}" class="p-[12px] cursor-pointer" @click="editable($event)">
-                                        {{$producto->cant_recibida}}
-                                    </span>
-                                </td>
-                            </tr>
-                            @endif
-                            @endif
-
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        @endforeach
     </form>
 </section>
 @endsection

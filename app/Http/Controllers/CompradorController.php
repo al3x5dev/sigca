@@ -21,35 +21,8 @@ class CompradorController extends Controller
     public function index(Request $request)
     {
         $comprador = Auth::user()->id;
+
         /*
-        $items = Solicitud::with(['usuario','ultimoEstado.estado'])
-            ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
-            ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
-            ->join('Estados as e', 'e.id', '=', 'sh.estado')
-            ->leftJoin('CompradoresCategorias as cc', 'cc.id_categoria', '=', 'c.id')
-            ->select(
-                'Solicitudes.*',
-                'Solicitudes.id_comprador as comprador',
-                'c.tipo as categoria',
-                'e.id as estado_id',
-                'e.estado as estado',
-                'sh.fecha'
-            )
-            ->where('Solicitudes.id_comprador', $comprador)
-            ->orWhereNull('Solicitudes.id_comprador')
-            ->whereIn('e.id', function ($query) {
-                $query->select('estado')
-                    ->from('SolicitudesHistorico')
-                    ->whereColumn('SolicitudesHistorico.id_solicitud', 'Solicitudes.id')
-                    ->orderBy('SolicitudesHistorico.fecha', 'desc')
-                    ->limit(1);
-            })
-            ->orderBy('e.id', 'asc')
-            ->orderBy('sh.fecha', 'desc')
-            ->paginate(10);
-*/
-
-
         $items = Solicitud::with(['usuario'])
             ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
             ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
@@ -77,7 +50,36 @@ class CompradorController extends Controller
             })
             ->orderByRaw('e.id ASC, sh.fecha DESC')
             ->paginate(10);
+*/
 
+        $items = Solicitud::join('solicitudeshistorico as sh', function ($join) {
+            //$join->on('solicitudes.id', '=', 'sh.id_solicitud');
+
+            // Primero obtenemos el último histórico de cada solicitud
+            $subquery = DB::table('solicitudeshistorico')
+                ->select('id_solicitud', DB::raw('MAX(fecha) as ultima_fecha'))
+                ->groupBy('id_solicitud');
+
+            $join->on('solicitudes.id', '=', 'sh.id_solicitud')
+                ->joinSub($subquery, 'ultimo', function ($join) {
+                    $join->on('sh.id_solicitud', '=', 'ultimo.id_solicitud')
+                        ->on('sh.fecha', '=', 'ultimo.ultima_fecha');
+                });
+        })
+            ->with([
+                'productos',
+                'usuario',
+                'prioridadSolicitud',
+                'categoriaSolicitud',
+                'vwArea',
+                'vwCcosto',
+                'ultimoEstado.estadoDetalles'
+            ])
+            ->orderBy('sh.estado')
+            //->orderBy('solicitudes.prioridad')
+            ->orderBy('sh.fecha', 'desc')
+            ->select('solicitudes.*')
+            ->get();
 
         $data = [
             'page' => [
@@ -96,38 +98,30 @@ class CompradorController extends Controller
         //Devuelve 404 si no existe el registro
         Solicitud::where('numero', $n)->firstOrFail();
 
-        $items = Solicitud::with(['usuario', 'productos'])
-            ->join('SolicitudesHistorico as sh', 'sh.id_solicitud', '=', 'Solicitudes.id')
-            ->join('Categorias as c', 'c.id', '=', 'Solicitudes.categoria')
-            ->join('Estados as e', 'e.id', '=', 'sh.estado')
-            ->select(
-                'Solicitudes.*',
-                //'Solicitudes.id_comprador as comprador',
-                'c.tipo as categoria',
-                'e.id as estado_id',
-                'e.estado as estado',
-                'sh.fecha'
-            )
-            ->whereIn('e.id', function ($query) {
-                $query->select('estado')
-                    ->from('SolicitudesHistorico')
-                    ->whereColumn('SolicitudesHistorico.id_solicitud', 'Solicitudes.id')
-                    ->orderBy('fecha', 'desc')
-                    ->limit(1);
-            })
-            ->where('Solicitudes.numero', $n)
-            ->get();
+        $solicitud = Solicitud::with([
+            'productos',
+            'usuario',
+            'prioridadSolicitud',
+            'categoriaSolicitud',
+            'vwArea',
+            'vwCcosto',
+            'ultimoEstado.estadoDetalles'
+        ])->where('numero', $n)->first();
 
-        //dd($items);
+        //dd();
+
+        if (!$solicitud) {
+            // Manejar el caso cuando no se encuentra
+            return redirect()->back()->with('error', 'Solicitud no encontrada');
+        }
 
         $data = [
             'page' => [
                 'parent' => [self::PARENT_PAGE, route(self::URL)],
                 'name' => "Solicitud $n"
             ],
-            'id' => $items[0]->id,
-            'state' => $items[0]->estado,
-            'items' => $items
+            'state' => $solicitud->ultimoEstado->estadoDetalles->estado,
+            'solicitud' => $solicitud
         ];
 
         return view('dashboard.gestor.estado', $data);
@@ -136,26 +130,24 @@ class CompradorController extends Controller
     public function changeState($id)
     {
         $solicitud = Solicitud::find($id);
-
+        $comprador = Auth::user()->id;
         if (!$solicitud) {
             return response()->json(['message' => 'Not found'], 404);
         }
 
-        $tipo = request()->input('type');
+        try {
+            //Agregar comprador a solicitud
+            $solicitud->update([
+                'id_comprador' => $comprador
+            ]);
 
-
-        // recupera cuerpo de solicitud
-        $data = json_decode(request()->input('productos'), true);
-
-        //APROBAR SOLICITUD
-        if ($tipo == 'aprobar' && is_null($data)) {
-            $solicitud->id_comprador = Auth::user()->id;
-            $solicitud->save();
-
+            //registrar estado
             $history = new SolicitudHistorico();
             $history->id_solicitud = $id;
             $history->estado = self::ESTADOS['aprobada'];
+            $history->id_usuario = $comprador;
             $history->save();
+
 
             return <<<HTML
             <div class="alert alert-success" x-bind="toggle=true">
@@ -168,73 +160,28 @@ class CompradorController extends Controller
                     }, 1200);
                 </script>
             HTML;
-        }
-
-
-        //dd($data, $solicitud->productos);
-
-
-        //ACTUALIZAR SOLICITUD
-        if ($tipo == 'actualizar') {
-            if (empty($data)) {
-                return <<<HTML
-                <div class="alert alert-error" x-bind="toggle=true">
-                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
-                <span >No se han detectado cambios para actualizar esta solicitud</span>
-                </div>
-                HTML;
-            }
-
-            //Verificar comprador
-            /*if ($solicitud->comprador->id != Auth::user()->id) {
-                return <<<HTML
-                <div class="alert alert-error" x-bind="toggle=true">
-                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
-                <span ></span>
-                </div>
-                HTML;
-            }*/
-
-            foreach ($solicitud->productos as $producto) {
-                foreach ($data as $value) {
-
-
-                    if (
-                        $producto->id_producto === $value['id']
-                        && (
-                            $producto->cant_recibida < $value['cantidad']
-                            && $producto->cant_solicitada >= $value['cantidad']
-                        )
-                    ) {
-                        try {
-                            // Actualizar el producto
-                            $producto->cant_recibida = intval($value['cantidad']);
-                            $producto->save();
-                        } catch (\Exception $e) {
-                            return <<<HTML
-                            <div class="alert alert-error" x-bind="toggle=true">
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
-                            <span >Error al actualizar el producto ID: {$producto->id_producto}. Mensaje: {$e->getMessage()}</span>
-                            </div>
-                            HTML;
-                        }
-                    }
-                }
-            }
-
-            // Respuesta detallada
-            $route = route('gestion.home');
+        } catch (\Throwable $th) {
             return <<<HTML
-            <div class="alert alert-success" x-bind="toggle=true">
-            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>
-            <span >Solicitud actualizada de manera exitosa.</span>
-            <script>
-            setTimeout(() => {
-                window.location.assign('{$route}');
-            }, 1000);
-            </script>
+            <div class="alert alert-error" x-bind="toggle=true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M12 17l.01 0" /><path d="M12 11l0 3" /></svg>
+                <span >Error: {{$th->getMessage()}}</span>
             </div>
             HTML;
         }
+    }
+
+    public function cerrarsolicitud()
+    {
+        DB::transaction(function () {
+            // Para procedimientos sin parámetros
+            DB::statement('EXEC sp_ActualizarProductosExistentes');
+            DB::statement('EXEC sp_CerrarSolicitud');
+            DB::statement('EXEC sp_UltimaSincronizacion');
+
+            // Si necesitas capturar resultados
+            // $result = DB::select('EXEC sp_ObtenerDatos');
+        });
+
+        return redirect()->route('gestion.home');
     }
 }

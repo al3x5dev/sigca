@@ -13,29 +13,31 @@ import 'simple-datatables/dist/style.css';
 function datatable() {
     return {
         init() {
-            new DataTable('#my-table', {
-                searchable: true,
-                fixedHeight: true,
-                //perPage: 8,
-                perPageSelect: [5, 10, 25, 50],
-                labels: {
-                    placeholder: "Buscar...", // Placeholder del campo de búsqueda
-                    perPage: "registros por página", // Texto del selector de filas
-                    noRows: "No se encontraron registros", // Mensaje cuando no hay datos
-                    info: "Mostrando del {start} al {end} de {rows} registros", // Información de paginación
-                    loading: "Cargando...", // Mensaje de carga
-                    infoFiltered: "filtrados de {rows} registros totales" // Información cuando se filtra
-                },
-                // Puedes añadir clases para personalizar el estilo con Tailwind CSS
-                classes: {
-                    input: "input",
-                    container: "datatable-container",
-                    selector: "select sp",
-                    table: "table",
-                    //thead: "datatable-thead",
-                    //tbody: "datatable-tbody",
-                    // ... más clases
-                }
+            this.$nextTick(() => {
+                new DataTable("#my-table", {
+                    searchable: true,
+                    fixedHeight: true,
+                    //perPage: 8,
+                    perPageSelect: [5, 10, 25, 50],
+                    labels: {
+                        placeholder: "Buscar...", // Placeholder del campo de búsqueda
+                        perPage: "registros por página", // Texto del selector de filas
+                        noRows: "No se encontraron registros", // Mensaje cuando no hay datos
+                        info: "Mostrando del {start} al {end} de {rows} registros", // Información de paginación
+                        loading: "Cargando...", // Mensaje de carga
+                        infoFiltered: "filtrados de {rows} registros totales" // Información cuando se filtra
+                    },
+                    // Puedes añadir clases para personalizar el estilo con Tailwind CSS
+                    classes: {
+                        input: "input",
+                        container: "datatable-container",
+                        selector: "select sp",
+                        table: "table",
+                        //thead: "datatable-thead",
+                        //tbody: "datatable-tbody",
+                        // ... más clases
+                    }
+                });
             });
         }
     }
@@ -258,7 +260,7 @@ function makeRequest() {
 
                 this.products.forEach(p => {
                     let editable = document.getElementById(`editable-${p.id_solicitud}`);
-                    if (editable!=null) {
+                    if (editable != null) {
                         editable.setAttribute('title', "Doble click para modificar");
                     }
                 });
@@ -286,7 +288,7 @@ function makeRequest() {
 
                 this.products.forEach(p => {
                     let editable = document.getElementById(`editable-${p.id_solicitud}`);
-                    if (editable!=null) {
+                    if (editable != null) {
                         editable.removeAttribute('title');
                     }
                 });

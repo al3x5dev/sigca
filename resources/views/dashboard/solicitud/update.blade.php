@@ -110,7 +110,7 @@
                 </div>
                 <!--/SELECTS-->
 
-
+                <p hidden>Creado: {{$solicitud->fecha}}</p>
                 <hr class="my-2.5">
 
                 <div class="max-w-dvw w-full mr-[-8em] overflow-x-auto">
@@ -121,6 +121,7 @@
                                 <tr>
                                     <th>Código</th>
                                     <th>Descripción</th>
+                                    <th>Almacén</th>
                                     <th>Disponibilidad</th>
                                     <th>Solicitar</th>
                                     @if ($solicitud->ultimoEstado->estado == 1)
@@ -131,8 +132,15 @@
                             <tbody>
                                 @foreach ($productos as $index => $producto)
                                 <tr id="{{$index}}" class="hover:bg-base-200 ">
-                                    <td>{{$producto->id_producto ?? null}}</td>
+                                    <td>
+                                        {{
+                                            str_starts_with($producto->id_producto,'ID')
+                                            ?'':
+                                            $producto->id_producto
+                                        }}
+                                    </td>
                                     <td>{{$producto->descripcion??''}}</td>
+                                    <td>{{$producto->almacen}}</td>
                                     <td x-text="disponibilidad(`{{$producto->id_producto}}`)"></td>
                                     <td class="cantSolicita">
                                         <span class="px-3 py-2.5"

@@ -199,7 +199,9 @@ class SolicitudController extends Controller
                         'id_solicitud' => $lastSolicitud->id,
                         'id_producto' => $id,
                         'descripcion' => $producto['Desc_Producto'],
-                        'cant_solicitada' => $producto['Solicitado']
+                        'cant_solicitada' => $producto['Solicitado'],
+                        'almacen' => $producto['Id_Almacen']??null
+
                     ]);
                     $save[] = $addProducto->save();
                 }

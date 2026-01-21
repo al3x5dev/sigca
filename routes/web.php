@@ -55,13 +55,14 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
     Route::prefix('gestion')->name('gestion.')->group(function() {
         Route::get('/', [CompradorController::class,'index'])->name('home');
         Route::get('/solicitud/{anno}/{numb}', [CompradorController::class,'estado'])->name('solicitud');
-        //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
+        Route::get('/close', [CompradorController::class, 'cerrarsolicitud'])->name('closeSolicitud');
     });
 
     //administracion
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::get('/', [AdminController::class, 'index'])->name('home');
         Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::get('/u/{id}', [AdminController::class, 'userOptions'])->name('userOptions');
         //Route::post('/nueva', [UsuarioController::class, 'addSolicitud'])->name('addSolicitud');
     });
 });
@@ -74,6 +75,6 @@ Route::prefix('api')
         Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
         Route::get('/p/{id}', [ProductoController::class, 'existsProducto'])->name('existsProducto');
         Route::delete('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
-        Route::post('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
+        Route::put('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
     });
