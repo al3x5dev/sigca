@@ -13,9 +13,16 @@ class Categoria extends Model
     protected $table = 'Categorias';
     protected $fillable = ['tipo'];
 
-    public function usuario(): BelongsToMany
+    public function compradores(): BelongsToMany
     {
-        return $this->belongsToMany(Usuario::class, 'CompradoresCategorias', 'id_comprador', 'id_categoria');
+        return $this->belongsToMany(
+            Usuario::class,
+            'CompradoresCategorias',
+            'id_categoria',   // Foreign key en pivot que referencia a Categoria
+            'id_comprador',   // Foreign key en pivot que referencia a Usuario
+            'id',             // Local key en Categoria
+            'id'              // Local key en Usuario
+        );
     }
 
     public function solicitud(): HasMany

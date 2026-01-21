@@ -56,7 +56,14 @@ class Usuario extends Authenticatable
 
     public function categoria(): BelongsToMany
     {
-        return $this->belongsToMany(Categoria::class, 'CompradoresCategorias', 'id_rol', 'id_usuario');
+        return $this->belongsToMany(
+            Categoria::class,
+            'CompradoresCategorias',
+            'id_comprador',  // Foreign key en CompradoresCategorias que referencia a Usuario
+            'id_categoria',  // Foreign key en CompradoresCategorias que referencia a Categoria
+            'id',            // Local key en Usuario (columna 'id')
+            'id'             // Local key en Categoria (columna 'id')
+        );
     }
 
     public function notificacion(): HasMany

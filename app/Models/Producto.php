@@ -20,7 +20,7 @@ class Producto extends Model
         'descripcion',
         'cant_solicitada',
         'cant_recibida',
-        'nuevo'
+        'almacen'
     ];
 
     public $timestamps = false;
