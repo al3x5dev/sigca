@@ -21,7 +21,7 @@
         {{$solicitud->ultimoEstado->estado!=1? 'hidden':''}}">Aprobar</button>
     </div>
     <form id="updSolicitud" class="card shadow-md border border-base-300" method="get"
-        hx-put="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
+        hx-post="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
         hx-trigger="submit"
         hx-indicator="#loadingModal"
         hx-target="#toast">

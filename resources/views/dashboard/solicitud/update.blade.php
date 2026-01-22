@@ -33,7 +33,7 @@
 
     <div class="flex flex-wrap lg:flex-nowrap gap-4">
         <form id="saveRequest" class="card shadow-md border border-base-300 mb-10 lg:w-12/12"
-            hx-put="{{route('solicitud.update')}}"
+            hx-post="{{route('solicitud.update')}}"
             hx-trigger="submit"
             hx-indicator="#loadingModal"
             hx-target="#form-response">
