@@ -21,7 +21,7 @@
         {{$solicitud->ultimoEstado->estado!=1? 'hidden':''}}">Aprobar</button>
     </div>
     <form id="updSolicitud" class="card shadow-md border border-base-300" method="get"
-        hx-put="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
+        hx-post="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
         hx-trigger="submit"
         hx-indicator="#loadingModal"
         hx-target="#toast">
@@ -30,10 +30,27 @@
 
         <div class="card-body">
 
+            @switch($solicitud->ultimoEstado->estado)
+            @case(1)
+            <h3 class="text-indigo-400 text-xl font-bold uppercase text-center">Solicitud pendiente</h3>
+            @break
+
+            @case(2)
+            <h3 class="text-sky-400 text-xl font-bold uppercase text-center">Solicitud en proceso</h3>
+            @break
+
+            @case(3)
+            <h3 class="text-success text-xl font-bold uppercase text-center">Solicitud Completada</h3>
+            @break
+            
+            @default
+            <h3 class="text-error text-xl font-bold uppercase text-center">Solicitud eliminada</h3>
+            @endswitch
+
             <p>
                 @if ($solicitud->ultimoEstado->estado>1)
                 @if ($solicitud->ultimoEstado->estado==4)
-                <b class="text-error">Eliminado por: {{$solicitud->ultimoEstado->usuario->nombre}}</b>
+                <b class="">Eliminado por: {{$solicitud->ultimoEstado->usuario->nombre}}</b>
                 @else
                 <b>Gestionado por: {{$solicitud->ultimoEstado->usuario->nombre}}</b>
                 @endif
@@ -69,9 +86,14 @@
                 @endphp
                 <br><br>
                 <a class="btn btn-info"
-                href="{{route('solicitud.download', $file)}}">
-                <span class="mr-2">Descargar archivo</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cloud-download"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" /><path d="M12 13l0 9" /><path d="M9 19l3 3l3 -3" /></svg>
+                    href="{{route('solicitud.download', $file)}}">
+                    <span class="mr-2">Descargar archivo</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cloud-download">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" />
+                        <path d="M12 13l0 9" />
+                        <path d="M9 19l3 3l3 -3" />
+                    </svg>
                 </a>
                 @endif
             </p>
