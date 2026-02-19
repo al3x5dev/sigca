@@ -13,7 +13,7 @@
         @click="toggle=!toggle"
         x-show="toggle"></div>
 
-        
+
 
     <div class="flex justify-between items-center mb-6">
         <h2 class="font-semibold text-2xl">Solicitud No. {{$solic_num}}</h2>
@@ -35,6 +35,7 @@
     <div class="flex flex-wrap lg:flex-nowrap gap-4">
         <form id="saveRequest" class="card shadow-md border border-base-300 mb-10 lg:w-12/12"
             hx-post="{{route('solicitud.save')}}"
+            hx-encoding="multipart/form-data"
             hx-trigger="submit"
             hx-indicator="#loadingModal"
             hx-target="#form-response">
@@ -97,6 +98,12 @@
                     </fieldset>
                 </div>
 
+
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Agregar documento</legend>
+                    <input type="file" class="file-input" name="upload" />
+                </fieldset>
+
                 <hr class="my-2.5">
 
                 <div class="max-w-dvw w-full mr-[-8em] overflow-x-auto">
@@ -152,8 +159,8 @@
             <h3 class="text-xl font-semibold mb-2.5 text-center">Solicitudes similares</h3>
             <template x-for="(item, index) in searchEngine" :key="index">
                 <div class="card p-3 bg-base-200 hover:bg-base-300 mb-3 cursor-pointer">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas nihil hic minima dolorem. Quas autem voluptas aperiam, eaque accusamus numquam sequi ducimus, pariatur, nemo tempore nesciunt! Officia dolores saepe consequuntur?
-            </div>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas nihil hic minima dolorem. Quas autem voluptas aperiam, eaque accusamus numquam sequi ducimus, pariatur, nemo tempore nesciunt! Officia dolores saepe consequuntur?
+                </div>
             </template>
         </div>
     </div>

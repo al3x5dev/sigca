@@ -326,7 +326,7 @@ function deleteModal() {
 
             try {
                 const response = await fetch(`${url}/api/delsolicitud/${this.id}`, {
-                    method: 'DELETE',
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': token

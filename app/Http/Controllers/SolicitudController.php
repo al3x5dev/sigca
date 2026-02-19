@@ -176,19 +176,44 @@ class SolicitudController extends Controller
         }
 
         try {
+            $numero = $request->post('numero');
+
+            // OBTENER ARCHIVOS
+            // Inicializar variable para el nombre del archivo
+            $filename = null;
+
+            // Verificar si hay archivo para este producto
+            // Asumiendo que los archivos vienen en un array con el mismo índice que los productos
+            if ($request->hasFile('upload')) {
+                // Si es un solo archivo para todos los productos
+                $doc = $request->file('upload');
+
+                // Validar que sea un archivo válido
+                if ($doc->isValid()) {
+                    $ext = $doc->getClientOriginalExtension();
+                    $fname = md5(time() . rand(1, 1000)) . '.' . $ext; // Agregar rand para evitar colisiones
+
+                    // Guardar el archivo
+                    $filename = $doc->storeAs('docs', $fname, 'public');
+                }
+            }
+
+
             //Crear Solicitud
             $newSolicitud = new Solicitud();
             $newSolicitud->fill([
-                'numero' => $request->post('numero'),
+                'numero' => $numero,
                 'id_usuario' => Auth::user()->id,
                 'categoria' => $request->post('categoria'),
                 'prioridad' => $request->post('prioridad'),
                 'detalles' => $request->post('detalles') ?? '',
                 'area' => $request->post('area'),
-                'ccosto' => $request->post('ccosto')
+                'ccosto' => $request->post('ccosto'),
+                'archivo' => $filename ?? null
+
             ]);
             if ($newSolicitud->save()) {
-                $lastSolicitud = Solicitud::where('numero', $request->post('numero'))->first();
+                $lastSolicitud = Solicitud::where('numero', $numero)->first();
                 $save = [];
                 //Agregar productos
                 foreach ($productos as $producto) {
@@ -200,8 +225,7 @@ class SolicitudController extends Controller
                         'id_producto' => $id,
                         'descripcion' => $producto['Desc_Producto'],
                         'cant_solicitada' => $producto['Solicitado'],
-                        'almacen' => $producto['Id_Almacen']??null
-
+                        'almacen' => $producto['Id_Almacen'] ?? null
                     ]);
                     $save[] = $addProducto->save();
                 }
@@ -226,12 +250,14 @@ class SolicitudController extends Controller
                 } else {
                     return "Hubo un error al agregar algunos productos a la base de datos.";
                 }
+            } else {
+                Solicitud::where('numero', $numero)->first()->delete();
+                throw new \Exception("Error al insertar la nueva solicitud en la base de datos");
             }
         } catch (\Throwable $th) {
             return <<<HTML
             <div class="alert alert-error" x-bind="toggle=true">
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
-                <span hidden>Error al insertar la nueva solicitud en la base de datos</span>
                 <span>{$th->getMessage()}</span>
             </div>
             HTML;

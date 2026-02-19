@@ -23,6 +23,7 @@ class Solicitud extends Model
         'prioridad',
         'detalles',
         'fecha',
+        'archivo'
     ];
 
     protected $casts = [

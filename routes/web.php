@@ -9,6 +9,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     // Verifica si el usuario está autenticado
@@ -49,6 +50,16 @@ Route::middleware(['ldap.auth', 'no.cache'])->group(function () {
         Route::get('/{anno}/{numb}', [SolicitudController::class, 'mostrar'])->name('mostrar');
         Route::post('/save', [SolicitudController::class, 'addSolicitud'])->name('save');
         Route::post('/update', [SolicitudController::class, 'updSolicitud'])->name('update');
+        Route::get('/descargar', function () {
+            $file = 'docs/'.request()->server('QUERY_STRING');
+            //dd(Storage::disk('public')->exists($file));
+
+            if (!Storage::disk('public')->exists($file)) {
+                abort(404);
+            }
+
+            return Storage::disk('public')->download($file);
+        })->name('download');
     });
 
     //gestion
@@ -74,7 +85,7 @@ Route::prefix('api')
     ->group(function () {
         Route::post('/search-products', [ProductoController::class, 'search'])->name('producto');
         Route::get('/p/{id}', [ProductoController::class, 'existsProducto'])->name('existsProducto');
-        Route::delete('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
+        Route::post('/delsolicitud/{id}', [SolicitudController::class, 'destroy'])->name('deleteSolicitud');
         Route::post('/solicitud/{id}', [CompradorController::class, 'changeState'])->name('changeStateSolicitud');
         Route::get('/profile', [PerfilController::class, 'index'])->name('perfil');
     });

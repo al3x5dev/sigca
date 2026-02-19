@@ -21,7 +21,7 @@
         {{$solicitud->ultimoEstado->estado!=1? 'hidden':''}}">Aprobar</button>
     </div>
     <form id="updSolicitud" class="card shadow-md border border-base-300" method="get"
-        hx-post="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
+        hx-put="{{route('api.changeStateSolicitud',[$solicitud->id])}}"
         hx-trigger="submit"
         hx-indicator="#loadingModal"
         hx-target="#toast">
@@ -63,6 +63,17 @@
                 <b>Fecha:</b> {{date('d/m/Y',strtotime($solicitud->fecha))}}
                 <br>
                 <b>Detalles:</b> {{$solicitud->detalles}}
+                @if (!is_null($solicitud->archivo))
+                @php
+                $file=basename($solicitud->archivo);
+                @endphp
+                <br><br>
+                <a class="btn btn-info"
+                href="{{route('solicitud.download', $file)}}">
+                <span class="mr-2">Descargar archivo</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cloud-download"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4" /><path d="M12 13l0 9" /><path d="M9 19l3 3l3 -3" /></svg>
+                </a>
+                @endif
             </p>
             <hr class="my-2.5">
 
