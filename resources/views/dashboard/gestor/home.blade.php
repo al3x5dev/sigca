@@ -80,7 +80,7 @@
                                     </svg>
                                 </a>
 
-                                @if ($item->ultimoEstado->estado != 4)
+                                @if ($item->ultimoEstado->estado < 3)
                                     <button x-on:click="$dispatch('openmodal', { id:'{{$item->id}}', numero: '{{$item->numero}}', open: true})">
                                     <div class="tooltip" data-tip="Eliminar">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer stroke-current text-error">
